@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="webshoppractice.client/webshoppractice.client.esproj">
+    <Build />
+    <Deploy />
+  </Project>
+  <Project Path="WebshopPractice.Server/WebshopPractice.Server.csproj" />
+</Solution>

@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography;
 using WebshopPractice.Server.Data.Models;
 
 namespace WebshopPractice.Server.Controllers;

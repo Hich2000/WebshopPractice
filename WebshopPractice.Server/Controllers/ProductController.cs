@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography;
 using WebshopPractice.Server.Data.Models;
 
 namespace WebshopPractice.Server.Controllers;
@@ -17,9 +16,9 @@ public class ProductController : ControllerBase
     [HttpGet(Name = "GetProduct")]
     public IEnumerable<Product>? Get()
     {
-        return Enumerable.Range(0, 4).Select(index => new Product { 
+        return Enumerable.Range(1, productNames.Length).Select(index => new Product { 
             Id = index,
-            Name = productNames[index],
+            Name = productNames[index-1],
             Price = 1.50M
         }).ToArray();
     }

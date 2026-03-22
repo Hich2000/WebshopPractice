@@ -2,10 +2,18 @@
 
 namespace WebshopPractice.Server.Data.Models;
 
-public class Product
+public class User
 {
     [Key]
     public int Id { get; set; }
     public required string Name { get; set; }
-    public decimal Price { get; set; }
+    public required UserLevel UserLevel { get; set; }
+    public ShoppingCart? ShoppingCart { get; set; }
+
+}
+
+public enum UserLevel
+{
+    Customer,
+    Admin
 }

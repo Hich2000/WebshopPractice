@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+  import TheWelcome from './components/TheWelcome.vue'
+  import ProductCard from './components/ProductCard.vue'
 </script>
 
 <template>
@@ -15,6 +16,9 @@ import TheWelcome from './components/TheWelcome.vue'
   <main>
     <TheWelcome />
   </main>
+
+
+  <ProductCard :id="1" :name="test" :price="1.50" />
 </template>
 
 <style scoped>

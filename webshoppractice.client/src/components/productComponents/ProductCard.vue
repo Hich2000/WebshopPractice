@@ -6,7 +6,7 @@
 
 <template>
   <div class="product-card">
-    <img src="../assets/logo.svg" />
+    <img src="@/assets/logo.svg" />
     <h2 class="product-name">{{ name }}</h2>
     <p class="product-id">ID: {{ id }}</p>
     <p class="product-price">€{{ price.toFixed(2) }}</p>

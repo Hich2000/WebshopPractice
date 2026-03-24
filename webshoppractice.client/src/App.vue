@@ -1,7 +1,7 @@
 <script setup lang="ts">
-  import HelloWorld from './components/HelloWorld.vue'
-  import TheWelcome from './components/TheWelcome.vue'
-  import ProductCard from './components/productComponents/ProductCard.vue'
+  // import HelloWorld from './components/HelloWorld.vue'
+  // import TheWelcome from './components/TheWelcome.vue'
+  import loginForm from './components/loginComponents/loginForm.vue'
   import ProductPage from './components/productComponents/ProductPage.vue'
 </script>
 
@@ -13,9 +13,11 @@
     </div>
   </header>-->
 
+
   <main>
     <!--<TheWelcome />-->
-    <ProductPage />
+    <loginForm />
+    <!-- <ProductPage /> -->
   </main>
 
 </template>

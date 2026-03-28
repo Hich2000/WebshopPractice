@@ -19,7 +19,7 @@ import LoginForm from './components/loginComponents/loginForm.vue'
 import ProductPage from './components/productComponents/ProductPage.vue'
 
 const routes = [
-  { path: '/Home', component: ProductPage },
+  { path: '/', component: ProductPage },
   { path: '/Login', component: LoginForm },
 ]
 

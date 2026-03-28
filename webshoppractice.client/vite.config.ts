@@ -55,7 +55,11 @@ export default defineConfig({
       '^/product': {
         target,
         secure: false
-      }
+      },
+      '^/login': {
+        target,
+        secure: false,
+      },
     },
     port: parseInt(env.DEV_SERVER_PORT || '58180'),
     https: {

@@ -20,7 +20,22 @@ export default defineComponent({
             this.error = null;
 
             try {
-                //todo call endpoint to login
+                const response = await fetch("/login/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    credentials: "include",
+                    body: JSON.stringify({
+                        username: this.username,
+                        password: this.password
+                    })
+                })
+                if (!response.ok) {
+                    throw new Error();
+                }
+                // Todo now that we are logged in we can redirect to a user info page
+                console.log(response);
             } catch(e: any) {
                 this.error = "Invalid username or password.";
             }

@@ -13,6 +13,21 @@ const app = createApp(App)
         }
     });
 
+//navigation
+import { createMemoryHistory, createRouter } from 'vue-router'
+import LoginForm from './components/loginComponents/loginForm.vue'
+
+const routes = [
+  { path: '/', component: LoginForm },
+]
+
+export const router = createRouter({
+  history: createMemoryHistory(),
+  routes,
+})
+
+app.use(router)
+
 // components
 import Button from 'primevue/button'
 app.component('Button', Button)

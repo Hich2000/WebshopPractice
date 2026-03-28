@@ -1,15 +1,10 @@
 <script lang="ts">
   import { defineComponent } from 'vue';
-
-  // import HelloWorld from './components/HelloWorld.vue'
-  // import TheWelcome from './components/TheWelcome.vue'
-  import loginForm from './components/loginComponents/loginForm.vue'
-  import ProductPage from './components/productComponents/ProductPage.vue'
+  import { RouterView } from 'vue-router';
 
   export default defineComponent({
     components: {
-      loginForm,
-      ProductPage
+      RouterView
     },
     data() {
       return {
@@ -31,35 +26,10 @@
 
 </script>
 
-<template>
- 
-  <Menubar :model="items" position="left">
-    <template #start style="width: 1rem">
-      <img src="@/assets/logo.svg" width="35" />
-    </template>
-    <template #item="{ item, props, hasSubmenu, root }">
-        <a class="flex items-center" v-bind="props.action">
-            <span>{{ item.label }}</span>
-            <span v-if="item.shortcut" class="ml-auto border border-surface rounded bg-emphasis text-muted-color text-xs p-1">{{ item.shortcut }}</span>
-            <i v-if="hasSubmenu" :class="['pi pi-angle-down ml-auto', { 'pi-angle-down': root, 'pi-angle-right': !root }]"></i>
-        </a>
-    </template>
-  </Menubar>
-
-  <!--<header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>-->
-
-
+<template> 
   <main>
-    <!--<TheWelcome />-->
-    <loginForm />
-    <!-- <ProductPage /> -->
+    <RouterView />
   </main>
-
 </template>
 
 <style scoped>

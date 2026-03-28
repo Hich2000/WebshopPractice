@@ -29,6 +29,7 @@ public class LoginController(UserRepository userRepository) : Controller
     public async Task<IActionResult> Login([FromBody] LoginRequestBody body)
     {
         var user = await _userRepository.GetUser(body.Username);
+        // Todo add propery security on password
         if (user == null || user.Password != body.Password)
         {
             return Unauthorized("Invalid credentials");

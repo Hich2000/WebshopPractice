@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WebshopPractice.Server.Data.Context;
+using WebshopPractice.Server.Data.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -9,10 +10,10 @@ builder.Services.AddDbContext<WebshopDbContext>(options =>
 );
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddScoped<UserRepository>();
 
 var app = builder.Build();
 

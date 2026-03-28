@@ -30,6 +30,6 @@ main {
 
 .page-content {
   flex: 1;
-  padding-top: 3rem;
+  padding-top: 2rem;
 }
 </style>

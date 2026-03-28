@@ -7,7 +7,7 @@ export default defineComponent({
             items: [
                 {
                     label: "Home",
-                    route: "/"
+                    route: "/Home"
                 },
                 {
                     label: "Login",
@@ -32,12 +32,10 @@ export default defineComponent({
 <style lang="css" scoped>
 .mainNavBar {
     display: block;
-    position: absolute;
-    top: 2rem;
-    left: 16rem;
-    right: 16rem;
+    position: sticky;
+    top: 1rem;
     z-index: 9999;
-    padding: 0 20px
+    width: 100%;
 }
 
 .mainNavBar ul {

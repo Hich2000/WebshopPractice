@@ -74,9 +74,8 @@
 
   .products-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr); /* 5 cards per row */
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 16px; /* spacing between cards */
-    justify-items: center; /* center each card in its column */
     margin-top: 20px;
   }
 </style>

@@ -7,18 +7,12 @@ namespace WebshopPractice.Server.Controllers;
 [Route("[controller]")]
 public class ProductController : ControllerBase
 {
-
-    private static readonly string[] productNames =
-    [
-        "productA", "productB", "productC", "productD", "productE"
-    ];
-
     [HttpGet(Name = "GetProduct")]
     public IEnumerable<Product>? Get()
     {
-        return Enumerable.Range(1, productNames.Length).Select(index => new Product { 
+        return Enumerable.Range(1, 20).Select(index => new Product { 
             Id = index,
-            Name = productNames[index-1],
+            Name = $"Product{index}",
             Price = 1.50M
         }).ToArray();
     }

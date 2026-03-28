@@ -7,7 +7,7 @@ export default defineComponent({
             items: [
                 {
                     label: "Home",
-                    route: "/Home"
+                    route: "/"
                 },
                 {
                     label: "Login",

@@ -1,32 +1,19 @@
 <script lang="ts">
   import { defineComponent } from 'vue';
   import { RouterView } from 'vue-router';
+  import MainNavBar from './components/navComponents/MainNavBar.vue';
 
   export default defineComponent({
     components: {
-      RouterView
+      RouterView,
+      MainNavBar
     },
-    data() {
-      return {
-        items: [
-          {
-            label: 'Home',
-            icon: 'pi pi-home',
-            command: () => alert('hello1')
-          },
-          {
-            label: 'Account',
-            icon: 'pi pi-user',
-            command: () => alert('hello2')
-          },
-        ]
-      }
-    }
   })
 
 </script>
 
-<template> 
+<template>
+  <MainNavBar />
   <main>
     <RouterView />
   </main>

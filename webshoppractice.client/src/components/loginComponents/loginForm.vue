@@ -36,9 +36,43 @@ export default defineComponent({
                 }
                 // Todo now that we are logged in we can redirect to a user info page
                 console.log(response);
-            } catch(e: any) {
+            } catch (e: any) {
                 this.error = "Invalid username or password.";
             }
+        },
+        async me() {
+            this.error = null;
+            try {
+                const response = await fetch("login/me", {
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                })
+
+                if (!response.ok) {
+                    throw new Error()
+                }
+
+                const result = await response.json()
+                this.error = result.username;
+            } catch (e: any) {
+                this.error = "not logged in";
+            }
+        },
+        async logout() {
+            this.error = null;
+            const response = await fetch("login/logout", {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+            })
+            if (!response.ok) {
+                throw new Error();
+            }
+            this.error = "logged out";
         }
     }
 });
@@ -62,6 +96,13 @@ export default defineComponent({
                 Login
             </button>
         </form>
+
+        <button type="button" v-on:click="me">
+            me
+        </button>
+        <button type="button" v-on:click="logout">
+            logout
+        </button>
     </div>
 </template>
 

@@ -8,13 +8,13 @@ public class UserRepository(WebshopDbContext dbContext)
 {
     private readonly WebshopDbContext _dbContext = dbContext;
 
-    public async Task<User> GetUser(int id)
+    public async Task<User?> GetUser(int id)
     {
-        return await _dbContext.Users.SingleAsync(u => u.Id == id);
+        return await _dbContext.Users.SingleOrDefaultAsync(u => u.Id == id);
     }
 
-    public async Task<User> GetUser(string username)
+    public async Task<User?> GetUser(string username)
     {
-        return await _dbContext.Users.SingleAsync(u => u.Username == username);
+        return await _dbContext.Users.SingleOrDefaultAsync(u => u.Username == username);
     }
 }

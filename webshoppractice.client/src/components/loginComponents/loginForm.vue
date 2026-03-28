@@ -4,7 +4,8 @@ import { defineComponent } from 'vue';
 interface LoginFormData {
     username: string,
     password: string,
-    error: null | string
+    error: null | string,
+    busy: boolean
 }
 
 export default defineComponent({
@@ -12,12 +13,14 @@ export default defineComponent({
         return {
             username: '',
             password: '',
-            error: null
+            error: null,
+            busy: false
         }
     },
     methods: {
         async login() {
             this.error = null;
+            this.busy = true;
 
             try {
                 const response = await fetch("/login/login", {
@@ -36,8 +39,10 @@ export default defineComponent({
                 }
                 // Todo now that we are logged in we can redirect to a user info page
                 console.log(response);
+                this.busy = false
             } catch (e: any) {
                 this.error = "Invalid username or password.";
+                this.busy = false
             }
         },
         async me() {
@@ -92,17 +97,11 @@ export default defineComponent({
             <p>
                 <input v-model="password" class="loginInput" type="password" placeholder="Password" required>
             </p>
-            <button type="submit">
-                Login
-            </button>
+            <Button type="submit" label="Login" :loading="busy" />
         </form>
 
-        <button type="button" v-on:click="me">
-            me
-        </button>
-        <button type="button" v-on:click="logout">
-            logout
-        </button>
+        <Button type="button" label="me" v-on:click="me" />
+        <Button type="button" label="logout" v-on:click="logout" />
     </div>
 </template>
 

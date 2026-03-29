@@ -94,10 +94,10 @@ export default defineComponent({
 
       <p>Login</p>
       <p>
-        <input v-model="username" class="loginInput" type="text" placeholder="E-mail" required>
+        <input v-model="username" class="formInput" type="text" placeholder="E-mail" required>
       </p>
       <p>
-        <input v-model="password" class="loginInput" type="password" placeholder="Password" required>
+        <input v-model="password" class="formInput" type="password" placeholder="Password" required>
       </p>
       <PButton type="submit" label="Login" :loading="busy" />
     </form>
@@ -106,16 +106,3 @@ export default defineComponent({
     <PButton type="button" label="logout" v-on:click="logout" />
   </div>
 </template>
-
-<style scoped>
-.formDiv {
-  text-align: center;
-  padding: 6rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-  height: 100%;
-}
-
-.loginInput {
-  width: 100%;
-}
-</style>

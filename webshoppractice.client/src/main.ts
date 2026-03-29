@@ -15,12 +15,12 @@ const app = createApp(App)
 
 //navigation
 import { createMemoryHistory, createRouter } from 'vue-router'
-import LoginForm from './components/loginComponents/loginForm.vue'
+import LoginView from './views/LoginView.vue'
 import ProductPage from './components/productComponents/ProductPage.vue'
 
 const routes = [
   { path: '/', component: ProductPage },
-  { path: '/Login', component: LoginForm },
+  { path: '/Login', component: LoginView },
 ]
 
 export const router = createRouter({

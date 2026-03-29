@@ -110,11 +110,7 @@ export default defineComponent({
 <style scoped>
 .formDiv {
   text-align: center;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 16px;
-  width: 300px;
-  background: #fff;
+  padding: 6rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 

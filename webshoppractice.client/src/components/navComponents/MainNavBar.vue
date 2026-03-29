@@ -2,51 +2,52 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
-    data() {
-        return {
-            items: [
-                {
-                    label: "Home",
-                    route: "/"
-                },
-                {
-                    label: "Login",
-                    route: "/Login"
-                }
-            ]
+  data() {
+    return {
+      items: [
+        {
+          label: "Home",
+          route: "/"
+        },
+        {
+          label: "Login",
+          route: "/Login"
         }
+      ]
     }
+  }
 })
 </script>
 
 <template>
-    <PMenubar class="mainNavBar" :model="items">
-        <template #item="{ item }">
-            <RouterLink :to="item.route">
-                {{ item.label }}
-            </RouterLink>
-        </template>
-    </PMenubar>
+  <PMenubar class="mainNavBar" :model="items">
+    <template #item="{ item }">
+      <RouterLink :to="item.route">
+        {{ item.label }}
+      </RouterLink>
+    </template>
+  </PMenubar>
 </template>
 
 <style lang="css" scoped>
 .mainNavBar {
-    display: block;
-    position: sticky;
-    top: 1rem;
-    z-index: 9999;
-    width: 100%;
+  display: block;
+  position: sticky;
+  top: 1rem;
+  z-index: 9999;
+  width: 100%;
 }
 
 .mainNavBar ul {
-    list-style: none;
-    display: flex;
-    gap: 20px;  /* space between menu items */
-    margin: 0;
-    padding: 0;
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  /* space between menu items */
+  margin: 0;
+  padding: 0;
 }
 
 .mainNavBar li {
-    cursor: pointer;
+  cursor: pointer;
 }
 </style>

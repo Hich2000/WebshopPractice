@@ -14,7 +14,7 @@ const app = createApp(App)
     });
 
 //navigation
-import { createMemoryHistory, createRouter } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from './views/LoginView.vue'
 import ProductPage from './components/productComponents/ProductPage.vue'
 
@@ -24,7 +24,7 @@ const routes = [
 ]
 
 export const router = createRouter({
-  history: createMemoryHistory(),
+  history: createWebHistory(),
   routes,
 })
 

@@ -7,11 +7,11 @@ import { createApp } from 'vue'
 import App from './App.vue'
 
 const app = createApp(App)
-    .use(PrimeVue, {
-        theme: {
-            preset: Aura,
-        }
-    });
+  .use(PrimeVue, {
+    theme: {
+      preset: Aura,
+    }
+  });
 
 //navigation
 import { createRouter, createWebHistory } from 'vue-router'

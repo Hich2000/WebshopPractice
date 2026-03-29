@@ -11,7 +11,9 @@ export default defineComponent({
 
 <template>
   <div class="login-grid">
-    <div><loginForm /></div>
+    <div>
+      <loginForm />
+    </div>
     <div>test</div>
   </div>
 </template>

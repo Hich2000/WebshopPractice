@@ -73,7 +73,6 @@ export default defineComponent({
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
-  /* spacing between cards */
   margin-top: 20px;
 }
 </style>

@@ -26,28 +26,17 @@ export default defineComponent({
         {{ item.label }}
       </RouterLink>
     </template>
+    <template #end>
+test
+    </template>
   </PMenubar>
 </template>
 
 <style lang="css" scoped>
 .mainNavBar {
-  display: block;
   position: sticky;
   top: 1rem;
   z-index: 9999;
   width: 100%;
-}
-
-.mainNavBar ul {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-  /* space between menu items */
-  margin: 0;
-  padding: 0;
-}
-
-.mainNavBar li {
-  cursor: pointer;
 }
 </style>

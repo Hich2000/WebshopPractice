@@ -1,4 +1,5 @@
 <script lang="ts">
+import { router } from '@/main';
 import { defineComponent } from 'vue';
 
 interface LoginFormData {
@@ -37,9 +38,9 @@ export default defineComponent({
         if (!response.ok) {
           throw new Error();
         }
-        // Todo now that we are logged in we can redirect to a user info page
-        console.log(response);
+
         this.busy = false
+        router.push('/')
       } catch (e: unknown) {
         console.log(e);
         this.error = "Invalid username or password.";
@@ -79,7 +80,7 @@ export default defineComponent({
       if (!response.ok) {
         throw new Error();
       }
-      this.error = "logged out";
+      router.push('/')
     }
   }
 });

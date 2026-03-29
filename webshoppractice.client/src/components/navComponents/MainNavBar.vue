@@ -15,32 +15,29 @@ interface NavBarData {
   currentUser: UserInfo | null
 }
 
-const navItems: MenuItem[] = [
-  {
-    label: "Home",
-    command: () => router.push('/')
-  },
-  {
-    label: "Login",
-    command: () => router.push('/Login')
-  }
-];
-const userMenuItems: MenuItem[] = [
-  {
-    label: "Profile",
-    command: () => router.push('/Login')
-  },
-  {
-    label: "Logout",
-    command: () => router.push('/')
-  }
-]
-
 export default defineComponent({
   data(): NavBarData {
     return {
-      navItems: navItems,
-      userMenuItems: userMenuItems,
+      navItems: [
+        {
+          label: "Home",
+          command: () => router.push('/')
+        },
+        {
+          label: "Login",
+          command: () => router.push('/Login')
+        }
+      ],
+      userMenuItems: [
+        {
+          label: "Profile",
+          command: () => router.push('/Login')
+        },
+        {
+          label: "Logout",
+          command: () => router.push('/')
+        }
+      ],
       userMenuRef: ref(),
       currentUser: null
     }
@@ -54,7 +51,10 @@ export default defineComponent({
   methods: {
     async me() {
       const response = await fetch("/login/me")
-      if (response.status === 401 || !response.ok) return
+      if (response.status === 401 || !response.ok) {
+        this.currentUser = null
+        return
+      }
       const result = await response.json()
       this.currentUser = {
         name: result.name,
@@ -83,8 +83,14 @@ export default defineComponent({
 
   <PMenubar class="mainNavBar" :model="navItems">
     <template #end>
-      <PButton type="button" icon="pi pi-user" @click="toggle($event)" aria-haspopup="true" aria-controls="user_menu" />
-      <PMenu ref="userMenu" id="user_menu" :model="userMenuItems" :popup="true"></PMenu>
+      <div v-if="currentUser">
+        <PButton type="button" icon="pi pi-user" @click="toggle($event)" aria-haspopup="true"
+          aria-controls="user_menu" />
+        <PMenu ref="userMenu" id="user_menu" :model="userMenuItems" :popup="true"></PMenu>
+      </div>
+      <div v-else>
+        <PButton @click="$router.push('/Login')">Login</PButton>
+      </div>
     </template>
   </PMenubar>
 </template>

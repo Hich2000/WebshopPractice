@@ -32,9 +32,11 @@ export const router = createRouter({
 app.use(router)
 
 // components
-import Button from 'primevue/button'
+import { Button } from 'primevue'
 app.component('PButton', Button)
-import Menubar from 'primevue/menubar'
+import { Menubar } from 'primevue'
 app.component('PMenubar', Menubar)
+import { Menu } from 'primevue'
+app.component('PMenu', Menu)
 
 app.mount('#app');

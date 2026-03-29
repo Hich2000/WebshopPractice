@@ -77,7 +77,13 @@ export default defineComponent({
       <div v-if="currentUser">
         <PButton type="button" icon="pi pi-user" @click="toggle($event)" aria-haspopup="true"
           aria-controls="user_menu" />
-        <PMenu ref="userMenu" id="user_menu" :model="userMenuItems" :popup="true"></PMenu>
+        <PMenu ref="userMenu" id="user_menu" :model="userMenuItems" :popup="true">
+          <template #start>
+            <div style="text-align: center;">
+              Welcome {{ currentUser.name }}
+            </div>
+          </template>
+        </PMenu>
       </div>
       <div v-else>
         <PButton @click="$router.push('/Login')">Login</PButton>

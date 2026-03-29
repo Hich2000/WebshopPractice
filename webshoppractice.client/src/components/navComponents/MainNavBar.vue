@@ -20,13 +20,13 @@ export default defineComponent({
 </script>
 
 <template>
-    <Menubar class="mainNavBar" :model="items">
+    <PMenubar class="mainNavBar" :model="items">
         <template #item="{ item }">
             <RouterLink :to="item.route">
                 {{ item.label }}
             </RouterLink>
         </template>
-    </Menubar>
+    </PMenubar>
 </template>
 
 <style lang="css" scoped>

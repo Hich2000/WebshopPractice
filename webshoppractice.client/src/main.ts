@@ -32,8 +32,8 @@ app.use(router)
 
 // components
 import Button from 'primevue/button'
-app.component('Button', Button)
+app.component('PButton', Button)
 import Menubar from 'primevue/menubar'
-app.component('Menubar', Menubar)
+app.component('PMenubar', Menubar)
 
 app.mount('#app');

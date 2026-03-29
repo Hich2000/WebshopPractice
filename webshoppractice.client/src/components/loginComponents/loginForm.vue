@@ -99,11 +99,11 @@ export default defineComponent({
       <p>
         <input v-model="password" class="loginInput" type="password" placeholder="Password" required>
       </p>
-      <Button type="submit" label="Login" :loading="busy" />
+      <PButton type="submit" label="Login" :loading="busy" />
     </form>
 
-    <Button type="button" label="me" v-on:click="me" />
-    <Button type="button" label="logout" v-on:click="logout" />
+    <PButton type="button" label="me" v-on:click="me" />
+    <PButton type="button" label="logout" v-on:click="logout" />
   </div>
 </template>
 

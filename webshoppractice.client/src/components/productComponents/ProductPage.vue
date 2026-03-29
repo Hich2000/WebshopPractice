@@ -55,7 +55,7 @@ export default defineComponent({
       Fetching products...
     </div>
 
-    <div v-else-if="post" class="content">
+    <div v-else-if="post">
       <div class="products-grid">
         <ProductCard v-for="product in post" :key="product.id" :id="product.id" :name="product.name"
           :price="product.price" />
@@ -71,7 +71,7 @@ export default defineComponent({
 
 .products-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
   /* spacing between cards */
   margin-top: 20px;

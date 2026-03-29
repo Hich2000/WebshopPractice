@@ -1,10 +1,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import loginForm from '@/components/loginComponents/loginForm.vue';
+import LoginForm from '@/components/loginComponents/loginForm.vue';
+import RegisterForm from '@/components/loginComponents/RegisterForm.vue';
 
 export default defineComponent({
   components: {
-    loginForm
+    LoginForm,
+    RegisterForm
   }
 })
 </script>
@@ -12,9 +14,11 @@ export default defineComponent({
 <template>
   <div class="login-grid">
     <div>
-      <loginForm />
+      <LoginForm />
     </div>
-    <div>test</div>
+    <div>
+      <RegisterForm />
+    </div>
   </div>
 </template>
 

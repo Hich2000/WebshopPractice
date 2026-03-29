@@ -1,10 +1,7 @@
 <script lang="ts">
 import { defineComponent, ref, type Ref } from 'vue';
-
-interface NavItems {
-  label: string,
-  route: (() => void) | string,
-}
+import type { MenuItem } from 'primevue/menuitem';
+import { router } from '@/main';
 
 interface UserInfo {
   name: string,
@@ -12,41 +9,39 @@ interface UserInfo {
 }
 
 interface NavBarData {
-  navItems: NavItems[],
-  userMenuItems: NavItems[],
+  navItems: MenuItem[],
+  userMenuItems: MenuItem[],
   userMenuRef: Ref
   currentUser: UserInfo | null
 }
 
-const navItems = [
+const navItems: MenuItem[] = [
   {
     label: "Home",
-    route: '/',
+    command: () => router.push('/')
   },
   {
     label: "Login",
-    route: '/Login',
+    command: () => router.push('/Login')
   }
 ];
-const userMenuItems = [
+const userMenuItems: MenuItem[] = [
   {
     label: "Profile",
-    route: '/Login',
+    command: () => router.push('/Login')
   },
   {
     label: "Logout",
-    route: '/',
+    command: () => router.push('/')
   }
 ]
-
-const userMenu = ref()
 
 export default defineComponent({
   data(): NavBarData {
     return {
       navItems: navItems,
       userMenuItems: userMenuItems,
-      userMenuRef: userMenu,
+      userMenuRef: ref(),
       currentUser: null
     }
   },
@@ -85,21 +80,11 @@ export default defineComponent({
 </script>
 
 <template>
+
   <PMenubar class="mainNavBar" :model="navItems">
-    <template #item="{ item }">
-      <RouterLink :to="item.route">
-        {{ item.label }}
-      </RouterLink>
-    </template>
     <template #end>
       <PButton type="button" icon="pi pi-user" @click="toggle($event)" aria-haspopup="true" aria-controls="user_menu" />
-      <PMenu ref="userMenu" id="user_menu" :model="userMenuItems" :popup="true" style="z-index: 11;" appendTo="body">
-        <template #item="{ item }">
-          <RouterLink :to="item.route">
-            {{ item.label }}
-          </RouterLink>
-        </template>
-      </PMenu>
+      <PMenu ref="userMenu" id="user_menu" :model="userMenuItems" :popup="true"></PMenu>
     </template>
   </PMenubar>
 </template>
@@ -110,9 +95,5 @@ export default defineComponent({
   top: 1rem;
   z-index: 10;
   width: 100%;
-}
-
-:deep(.p-menu) {
-  transform: translateX(-100%);
 }
 </style>

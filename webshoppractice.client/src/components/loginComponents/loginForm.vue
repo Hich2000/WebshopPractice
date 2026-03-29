@@ -1,6 +1,9 @@
 <script lang="ts">
 import { router } from '@/main';
 import { defineComponent } from 'vue';
+import { useUser } from '@/composables/user'
+
+const { fetchCurrentUser } = useUser()
 
 interface LoginFormData {
   username: string,
@@ -23,65 +26,26 @@ export default defineComponent({
       this.error = null;
       this.busy = true;
 
-      try {
-        const response = await fetch("/login/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            username: this.username,
-            password: this.password
-          })
-        })
-        if (!response.ok) {
-          throw new Error();
-        }
-
-        this.busy = false
-        router.push('/')
-      } catch (e: unknown) {
-        console.log(e);
-        this.error = "Invalid username or password.";
-        this.busy = false
-      }
-    },
-    async me() {
-      this.error = null;
-      try {
-        const response = await fetch("login/me", {
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
-        })
-
-        if (!response.ok) {
-          throw new Error()
-        }
-
-        const result = await response.json()
-        this.error = result.username;
-      } catch (e: unknown) {
-        console.log(e)
-        this.error = "not logged in"
-      }
-    },
-    async logout() {
-      this.error = null;
-      const response = await fetch("login/logout", {
+      await fetch("/login/login", {
         method: "POST",
-        credentials: "include",
         headers: {
           "Content-Type": "application/json"
         },
+        credentials: "include",
+        body: JSON.stringify({
+          username: this.username,
+          password: this.password
+        })
+      }).then(() => {
+        this.busy = false
+        fetchCurrentUser(true)
+        router.push('/')
+      }).catch(() => {
+        this.error = "Invalid username or password.";
+        this.busy = false
       })
-      if (!response.ok) {
-        throw new Error();
-      }
-      router.push('/')
-    }
+
+    },
   }
 });
 </script>
@@ -102,8 +66,5 @@ export default defineComponent({
       </p>
       <PButton type="submit" label="Login" :loading="busy" />
     </form>
-
-    <PButton type="button" label="me" v-on:click="me" />
-    <PButton type="button" label="logout" v-on:click="logout" />
   </div>
 </template>

@@ -2,17 +2,15 @@
 import { defineComponent, ref, type Ref } from 'vue';
 import type { MenuItem } from 'primevue/menuitem';
 import { router } from '@/main';
+import { useUser, type User } from '@/composables/user'
 
-interface UserInfo {
-  name: string,
-  username: string,
-}
+const { currentUser, fetchCurrentUser } = useUser()
 
 interface NavBarData {
   navItems: MenuItem[],
   userMenuItems: MenuItem[],
   userMenuRef: Ref
-  currentUser: UserInfo | null
+  currentUser: Ref<User | null>
 }
 
 export default defineComponent({
@@ -35,32 +33,25 @@ export default defineComponent({
         },
         {
           label: "Logout",
-          command: () => router.push('/')
+          command: async () => {
+            await fetch('login/logout', {
+              method: "POST"
+            }).then(() => {
+              fetchCurrentUser(true)
+              console.log(currentUser.value)
+              router.push('/')
+            })
+          }
         }
       ],
       userMenuRef: ref(),
-      currentUser: null
+      currentUser: currentUser
     }
   },
   async created() {
-    await this.me()
-  },
-  watch: {
-    '$route': 'me'
+    await fetchCurrentUser()
   },
   methods: {
-    async me() {
-      const response = await fetch("/login/me")
-      if (response.status === 401 || !response.ok) {
-        this.currentUser = null
-        return
-      }
-      const result = await response.json()
-      this.currentUser = {
-        name: result.name,
-        username: result.username
-      }
-    },
     toggle(event: Event) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const menu = this.$refs.userMenu as any

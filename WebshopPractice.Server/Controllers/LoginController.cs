@@ -17,9 +17,15 @@ public class LoginController(UserRepository userRepository) : Controller
     [Authorize]
     public async Task<IActionResult> me()
     {
-        var username = User.Identity?.Name;
+        var nameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
+        var usernameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
+        
+        var name = nameClaim?.Value ?? "";
+        var username = usernameClaim?.Value ?? "";
+
         return Ok(new
         {
+            name,
             username
         });
     }
@@ -37,7 +43,8 @@ public class LoginController(UserRepository userRepository) : Controller
 
         var claims = new List<Claim>
         {
-            new(ClaimTypes.Name, user.Username),
+            new(ClaimTypes.Email, user.Username),
+            new(ClaimTypes.Name, user.Name),
             new(ClaimTypes.NameIdentifier, user.Id.ToString()),
         };
 

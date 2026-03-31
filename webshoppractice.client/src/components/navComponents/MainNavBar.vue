@@ -4,7 +4,7 @@ import type { MenuItem } from 'primevue/menuitem';
 import { router } from '@/main';
 import { useUser, type User } from '@/composables/user'
 
-const { currentUser, fetchCurrentUser } = useUser()
+const { currentUser, fetchCurrentUser, logout } = useUser()
 
 interface NavBarData {
   navItems: MenuItem[],
@@ -21,10 +21,6 @@ export default defineComponent({
           label: "Home",
           command: () => router.push('/')
         },
-        {
-          label: "Login",
-          command: () => router.push('/Login')
-        }
       ],
       userMenuItems: [
         {
@@ -34,13 +30,8 @@ export default defineComponent({
         {
           label: "Logout",
           command: async () => {
-            await fetch('login/logout', {
-              method: "POST"
-            }).then(() => {
-              fetchCurrentUser(true)
-              console.log(currentUser.value)
-              router.push('/')
-            })
+            await logout()
+            router.push('/')
           }
         }
       ],

@@ -5,15 +5,17 @@ export interface User {
   username: string
 }
 
-const currentUser = ref<User|null>(null)
+const currentUser = ref<User | null>(null)
 const initialized = ref(false)
 
-export async function fetchCurrentUser(force = false): Promise<User|null> {
+export async function fetchCurrentUser(force = false): Promise<User | null> {
   if (initialized.value && !force) {
     return currentUser.value
   }
 
-  const response = await fetch('/login/me')
+  const response = await fetch('/login/me', {
+    credentials: "include"
+  })
   if (response.status == 401 || !response.ok) {
     currentUser.value = null
   } else {
@@ -28,9 +30,19 @@ export async function fetchCurrentUser(force = false): Promise<User|null> {
   return currentUser.value
 }
 
+export async function logout(): Promise<void> {
+  await fetch('/login/logout', {
+    credentials: "include",
+    method: "POST"
+  })
+
+  await fetchCurrentUser(true)
+}
+
 export function useUser() {
   return {
     currentUser: readonly(currentUser),
-    fetchCurrentUser
+    fetchCurrentUser,
+    logout
   }
 }

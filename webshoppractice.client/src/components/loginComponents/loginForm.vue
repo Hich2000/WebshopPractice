@@ -3,7 +3,7 @@ import { router } from '@/main';
 import { defineComponent } from 'vue';
 import { useUser } from '@/composables/user'
 
-const { fetchCurrentUser } = useUser()
+const { fetchCurrentUser, login } = useUser()
 
 interface LoginFormData {
   username: string,
@@ -22,29 +22,20 @@ export default defineComponent({
     }
   },
   methods: {
-    async login() {
+    async onsubmit() {
       this.error = null;
       this.busy = true;
 
-      await fetch("/login/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          username: this.username,
-          password: this.password
-        })
-      }).then(() => {
+      const success = await login(this.username, this.password)
+
+      if (success) {
         this.busy = false
         fetchCurrentUser(true)
         router.push('/')
-      }).catch(() => {
+      } else {
         this.error = "Invalid username or password.";
         this.busy = false
-      })
-
+      }
     },
   }
 });
@@ -52,7 +43,7 @@ export default defineComponent({
 
 <template>
   <div class="formDiv">
-    <form @submit.prevent="login">
+    <form @submit.prevent="onsubmit">
       <p v-if="error" style="color: red;">
         {{ error }}
       </p>

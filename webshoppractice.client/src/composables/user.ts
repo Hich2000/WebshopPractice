@@ -32,17 +32,40 @@ export async function fetchCurrentUser(force = false): Promise<User | null> {
 
 export async function logout(): Promise<void> {
   await fetch('/login/logout', {
-    credentials: "include",
-    method: "POST"
+    credentials: 'include',
+    method: 'POST'
   })
 
   await fetchCurrentUser(true)
+}
+
+export async function login(username: string, password: string): Promise<boolean> {
+
+  const response = await fetch("/login/login", {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      username: username,
+      password: password
+    })
+  })
+
+  if (!response.ok || response.status == 401) {
+    return false
+  }
+
+  await fetchCurrentUser(true)
+  return true
 }
 
 export function useUser() {
   return {
     currentUser: readonly(currentUser),
     fetchCurrentUser,
-    logout
+    logout,
+    login
   }
 }

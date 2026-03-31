@@ -25,7 +25,7 @@ export default defineComponent({
       userMenuItems: [
         {
           label: "Profile",
-          command: () => router.push('/Login')
+          command: () => router.push('/Profile')
         },
         {
           label: "Logout",

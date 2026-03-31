@@ -18,10 +18,25 @@ const app = createApp(App)
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from './views/LoginView.vue'
 import ProductPage from './components/productComponents/ProductPage.vue'
+import ProfileView from './views/ProfileView.vue'
 
 const routes = [
   { path: '/', component: ProductPage },
   { path: '/Login', component: LoginView },
+  {
+    path: '/Profile',
+    component: ProfileView,
+    children: [
+      {
+        path: 'Me',
+        component: ProfileView
+      },
+      {
+        path: 'Password',
+        component: ProfileView
+      }
+    ]
+  },
 ]
 
 export const router = createRouter({

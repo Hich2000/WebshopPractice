@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebshopPractice.Server.Data.Context;
@@ -54,6 +55,19 @@ builder.Services.AddIdentity<ShopUser, IdentityRole>(options =>
 })
     .AddEntityFrameworkStores<WebshopDbContext>()
     .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/login";
+        options.Cookie.Name = "auth_cookie";
+        options.Events.OnRedirectToReturnUrl = context =>
+        {
+            context.Response.StatusCode = 401;
+            return Task.CompletedTask;
+        };
+    });
+
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
@@ -80,6 +94,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

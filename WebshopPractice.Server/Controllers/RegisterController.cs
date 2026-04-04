@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebshopPractice.Server.Data.Models;
 
@@ -13,26 +14,12 @@ public class RegisterController(
     private readonly UserManager<ShopUser> _userManager = usermanager;
 
     [HttpPost]
-    public async Task<IActionResult> Register([FromBody] RegisterRequestBody body)
+    [Route("User")]
+    public async Task<IActionResult> RegisterUser([FromBody] RegisterRequestBody body)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        //first check if email exists
-        var userExists = await _userManager.FindByEmailAsync(body.Email);
-        if (userExists != null)
-        {
-            return Conflict(new { message = "This email is already in use." });
-        }
-
-        var newUser = new ShopUser
-        {
-            UserName = body.Email,
-            Email = body.Email,
-            Name = body.Name,
-            UserLevel = body.UserLevel,
-        };
-
-        var result = await _userManager.CreateAsync(newUser, body.Password);
+        var result = await CreateUser(body);
 
         if (!result.Succeeded)
         {
@@ -41,6 +28,49 @@ public class RegisterController(
         }
 
         return Ok();
+    }
+
+    [HttpPost]
+    [Authorize]
+    [Route("Admin")]
+    public async Task<IActionResult> RegisterAdmin([FromBody] RegisterRequestBody body)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var result = await CreateUser(body, UserLevel.Admin);
+
+        if (!result.Succeeded)
+        {
+            var errors = result.Errors.Select(e => e.Description);
+            return BadRequest(new { errors });
+        }
+
+        return Ok();
+    }
+
+    private async Task<IdentityResult> CreateUser(RegisterRequestBody body, UserLevel? userLevel = null)
+    {
+        //first check if email exists
+        var userExists = await _userManager.FindByEmailAsync(body.Email);
+        if (userExists != null)
+        {
+            return IdentityResult.Failed(new IdentityError
+            {
+                Code = "DuplicateEmail",
+                Description = "This email is already in use."
+            });
+        }
+
+        var newUser = new ShopUser
+        {
+            UserName = body.Email,
+            Email = body.Email,
+            Name = body.Name,
+            UserLevel = userLevel ?? body.UserLevel,
+        };
+
+        var result = await _userManager.CreateAsync(newUser, body.Password);
+        return result;
     }
 
     public class RegisterRequestBody

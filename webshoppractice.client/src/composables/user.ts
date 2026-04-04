@@ -13,7 +13,7 @@ export async function fetchCurrentUser(force = false): Promise<User | null> {
     return currentUser.value
   }
 
-  const response = await fetch('/login/me', {
+  const response = await fetch('/me', {
     credentials: "include"
   })
   if (response.status == 401 || !response.ok) {
@@ -31,7 +31,7 @@ export async function fetchCurrentUser(force = false): Promise<User | null> {
 }
 
 export async function logout(): Promise<void> {
-  await fetch('/login/logout', {
+  await fetch('/logout', {
     credentials: 'include',
     method: 'POST'
   })
@@ -41,7 +41,7 @@ export async function logout(): Promise<void> {
 
 export async function login(email: string, password: string): Promise<boolean> {
 
-  const response = await fetch("/login/login", {
+  const response = await fetch("/login", {
     method: 'POST',
     credentials: 'include',
     headers: {

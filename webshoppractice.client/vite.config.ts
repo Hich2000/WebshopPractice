@@ -60,6 +60,14 @@ export default defineConfig({
         target,
         secure: false,
       },
+      '^/me': {
+        target,
+        secure: false,
+      },
+      '^/logout': {
+        target,
+        secure: false,
+      },
     },
     port: parseInt(env.DEV_SERVER_PORT || '58180'),
     https: {

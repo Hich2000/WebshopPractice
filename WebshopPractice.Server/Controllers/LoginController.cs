@@ -6,7 +6,7 @@ using WebshopPractice.Server.Data.Models;
 namespace WebshopPractice.Server.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("")]
 public class LoginController(
     UserManager<ShopUser> userManager,
     SignInManager<ShopUser> signInManager
@@ -31,8 +31,7 @@ public class LoginController(
         });
     }
 
-    [HttpPost]
-    [Route("[controller]")]
+    [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestBody body)
     {
         var user = await _userManager.FindByEmailAsync(body.Email);

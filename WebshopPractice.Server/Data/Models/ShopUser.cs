@@ -1,15 +1,10 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using System.ComponentModel.DataAnnotations;
 
 namespace WebshopPractice.Server.Data.Models;
 
-public class User
+public class ShopUser: IdentityUser
 {
-    [Key]
-    public int Id { get; set; }
     public required string Name { get; set; }
-    public required string Username { get; set; }
-    public required string Password { get; set; }
     public required UserLevel UserLevel { get; set; }
     public ShoppingCart? ShoppingCart { get; set; }
 }
@@ -17,5 +12,6 @@ public class User
 public enum UserLevel
 {
     Customer,
+    Seller,
     Admin
 }

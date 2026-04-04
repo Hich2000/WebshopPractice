@@ -9,6 +9,6 @@ public class ShoppingCart
     public IEnumerable<Product>? Products { get; set; }
 
     //user coupling
-    public int UserId { get; set; }
-    public required User User { get; set; }
+    public required string ShopUserId { get; set; }
+    public required ShopUser ShopUser { get; set; }
 }

@@ -1,32 +1,33 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using WebshopPractice.Server.Data.Repositories;
+using WebshopPractice.Server.Data.Models;
 
 namespace WebshopPractice.Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class LoginController(UserRepository userRepository) : Controller
+public class LoginController(
+    UserManager<ShopUser> userManager,
+    SignInManager<ShopUser> signInManager
+) : Controller
 {
-    private readonly UserRepository _userRepository = userRepository;
+    private readonly UserManager<ShopUser> _userManager = userManager;
+    private readonly SignInManager<ShopUser> _signInManager = signInManager;
 
     [HttpGet("me")]
     [Authorize]
     public async Task<IActionResult> me()
     {
-        var nameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Name);
-        var usernameClaim = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email);
-        
-        var name = nameClaim?.Value ?? "";
-        var username = usernameClaim?.Value ?? "";
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user == null)
+            return Unauthorized();
 
         return Ok(new
         {
-            name,
-            username
+            name = user.Name,
+            username = user.UserName
         });
     }
 
@@ -34,24 +35,24 @@ public class LoginController(UserRepository userRepository) : Controller
     [Route("[controller]")]
     public async Task<IActionResult> Login([FromBody] LoginRequestBody body)
     {
-        var user = await _userRepository.GetUser(body.Username);
+        var user = await _userManager.FindByEmailAsync(body.Email);
         // Todo add propery security on password
-        if (user == null || user.Password != body.Password)
+        if (user == null)
         {
             return Unauthorized("Invalid credentials");
         }
 
-        var claims = new List<Claim>
+        var result = await _signInManager.PasswordSignInAsync(
+            user,
+            body.Password,
+            isPersistent: false,
+            lockoutOnFailure: false
+        );
+
+        if (!result.Succeeded)
         {
-            new(ClaimTypes.Email, user.Username),
-            new(ClaimTypes.Name, user.Name),
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        };
-
-        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+            return Unauthorized("Invalid credentials");
+        }
 
         return Ok();
     }
@@ -59,13 +60,13 @@ public class LoginController(UserRepository userRepository) : Controller
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await _signInManager.SignOutAsync();
         return Ok();
     }
 
     public class LoginRequestBody
     {
-        public required string Username { get; set; }
+        public required string Email { get; set; }
         public required string Password { get; set; }
     }
 }

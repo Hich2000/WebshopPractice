@@ -19,6 +19,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from './views/LoginView.vue'
 import ProductPage from './components/productComponents/ProductPage.vue'
 import ProfileView from './views/ProfileView.vue'
+import MyInformation from './components/profileComponents/MyInformation.vue'
 
 const routes = [
   { path: '/', component: ProductPage },
@@ -29,7 +30,7 @@ const routes = [
     children: [
       {
         path: 'Me',
-        component: ProfileView
+        component: MyInformation
       },
       {
         path: 'Password',

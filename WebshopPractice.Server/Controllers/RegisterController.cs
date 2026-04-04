@@ -15,11 +15,11 @@ public class RegisterController(
 
     [HttpPost]
     [Route("User")]
-    public async Task<IActionResult> RegisterUser([FromBody] RegisterRequestBody body)
+    public async Task<IActionResult> RegisterCustomer([FromBody] RegisterRequestBody body)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
-        var result = await CreateUser(body);
+        var result = await CreateUser(body, UserLevel.Customer);
 
         if (!result.Succeeded)
         {
@@ -48,7 +48,7 @@ public class RegisterController(
         return Ok();
     }
 
-    private async Task<IdentityResult> CreateUser(RegisterRequestBody body, UserLevel? userLevel = null)
+    private async Task<IdentityResult> CreateUser(RegisterRequestBody body, UserLevel userLevel)
     {
         //first check if email exists
         var userExists = await _userManager.FindByEmailAsync(body.Email);
@@ -66,7 +66,7 @@ public class RegisterController(
             UserName = body.Email,
             Email = body.Email,
             Name = body.Name,
-            UserLevel = userLevel ?? body.UserLevel,
+            UserLevel = userLevel,
         };
 
         var result = await _userManager.CreateAsync(newUser, body.Password);
@@ -78,6 +78,5 @@ public class RegisterController(
         public required string Name { get; set; }
         public required string Email { get; set; }
         public required string Password { get; set; }
-        public UserLevel UserLevel { get; } = UserLevel.Customer;
     }
 }

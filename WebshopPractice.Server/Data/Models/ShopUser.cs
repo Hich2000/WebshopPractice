@@ -5,6 +5,7 @@ namespace WebshopPractice.Server.Data.Models;
 public class ShopUser: IdentityUser
 {
     public required string Name { get; set; }
+    public override string Email { get; set; } = null!;
     public required UserLevel UserLevel { get; set; }
     public ShoppingCart? ShoppingCart { get; set; }
 }

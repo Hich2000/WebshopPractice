@@ -15,8 +15,14 @@ public class WebshopDbContext(DbContextOptions<WebshopDbContext> options)
     {
         base.OnModelCreating(builder);
 
+        // setup email to be unique on database layer
         builder.Entity<ShopUser>()
-            .HasIndex(u => u.Email)
+            .HasIndex(u => u.NormalizedEmail)
             .IsUnique();
+
+        //setup email to be required
+        builder.Entity<ShopUser>()
+            .Property(u => u.Email)
+            .IsRequired();
     }
 }

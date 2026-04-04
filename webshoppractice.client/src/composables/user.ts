@@ -2,7 +2,7 @@ import { ref, readonly } from "vue";
 
 export interface User {
   name: string,
-  username: string
+  email: string
 }
 
 const currentUser = ref<User | null>(null)
@@ -22,7 +22,7 @@ export async function fetchCurrentUser(force = false): Promise<User | null> {
     const data = await response.json()
     currentUser.value = {
       name: data.name,
-      username: data.username
+      email: data.email
     }
   }
 
@@ -39,7 +39,7 @@ export async function logout(): Promise<void> {
   await fetchCurrentUser(true)
 }
 
-export async function login(username: string, password: string): Promise<boolean> {
+export async function login(email: string, password: string): Promise<boolean> {
 
   const response = await fetch("/login/login", {
     method: 'POST',
@@ -48,7 +48,7 @@ export async function login(username: string, password: string): Promise<boolean
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      username: username,
+      email: email,
       password: password
     })
   })

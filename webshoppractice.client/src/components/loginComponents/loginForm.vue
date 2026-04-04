@@ -6,7 +6,7 @@ import { useUser } from '@/composables/user'
 const { fetchCurrentUser, login } = useUser()
 
 interface LoginFormData {
-  username: string,
+  email: string,
   password: string,
   error: null | string,
   busy: boolean
@@ -15,7 +15,7 @@ interface LoginFormData {
 export default defineComponent({
   data(): LoginFormData {
     return {
-      username: '',
+      email: '',
       password: '',
       error: null,
       busy: false
@@ -26,14 +26,15 @@ export default defineComponent({
       this.error = null;
       this.busy = true;
 
-      const success = await login(this.username, this.password)
+      const success = await login(this.email, this.password)
+      console.log(success);
 
       if (success) {
         this.busy = false
         fetchCurrentUser(true)
         router.push('/')
       } else {
-        this.error = "Invalid username or password.";
+        this.error = "Invalid email or password.";
         this.busy = false
       }
     },
@@ -50,7 +51,7 @@ export default defineComponent({
 
       <p>Login</p>
       <p>
-        <input v-model="username" class="formInput" type="text" placeholder="E-mail" required>
+        <input v-model="email" class="formInput" type="text" placeholder="E-mail" required>
       </p>
       <p>
         <input v-model="password" class="formInput" type="password" placeholder="Password" required>

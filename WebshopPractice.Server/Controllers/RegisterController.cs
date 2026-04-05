@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using WebshopPractice.Server.Data.Models;
@@ -14,7 +15,7 @@ public class RegisterController(
     private readonly UserManager<ShopUser> _userManager = usermanager;
 
     [HttpPost]
-    [Route("User")]
+    [Route("user")]
     public async Task<IActionResult> RegisterCustomer([FromBody] RegisterRequestBody body)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -32,7 +33,7 @@ public class RegisterController(
 
     [HttpPost]
     [Authorize]
-    [Route("Admin")]
+    [Route("admin")]
     public async Task<IActionResult> RegisterAdmin([FromBody] RegisterRequestBody body)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -46,6 +47,30 @@ public class RegisterController(
         }
 
         return Ok();
+    }
+
+    [HttpPatch]
+    [Authorize]
+    [Route("changeOwnPassword")]
+    public async Task<IActionResult> ChangeOwnPassword([FromBody] ChangePasswordRequestBody body)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        var user = await _userManager.GetUserAsync(User);
+        var correctPassword = await _userManager.CheckPasswordAsync(user, body.OldPassword);
+
+        if (!correctPassword) return BadRequest("Password is not correct.");
+        if (body.NewPassword != body.VerifyNewPassword) return BadRequest("New password does not match verification field.");
+
+        var result = _userManager.ChangePasswordAsync(user, body.OldPassword, body.NewPassword);
+
+        if (result.IsCompletedSuccessfully)
+        {
+            return Ok();
+        } else
+        {
+            return Conflict("Could not update password.");
+        }
     }
 
     private async Task<IdentityResult> CreateUser(RegisterRequestBody body, UserLevel userLevel)
@@ -78,5 +103,12 @@ public class RegisterController(
         public required string Name { get; set; }
         public required string Email { get; set; }
         public required string Password { get; set; }
+    }
+
+    public class ChangePasswordRequestBody
+    {
+        public required string OldPassword { get; set; }
+        public required string NewPassword { get; set; }
+        public required string VerifyNewPassword { get; set; }
     }
 }

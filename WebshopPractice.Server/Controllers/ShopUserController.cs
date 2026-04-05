@@ -8,7 +8,7 @@ using WebshopPractice.Server.Helpers;
 namespace WebshopPractice.Server.Controllers;
 
 [ApiController]
-[Authorize]
+[Authorize(Policy = "Admin")]
 [Route("[controller]")]
 public class ShopUserController(
     WebshopDbContext db

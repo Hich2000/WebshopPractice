@@ -1,8 +1,11 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
 using WebshopPractice.Server.Data.Context;
 using WebshopPractice.Server.Data.Models;
+using WebshopPractice.Server.Helpers;
 
 static async Task SeedUsers(IServiceProvider services)
 {
@@ -45,6 +48,10 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+// Register my custom authorization handler
+builder.Services.AddSingleton<IAuthorizationHandler, MinimumUserLevelHandler>();
+
+// Register identity service as well as custom claims factory
 builder.Services.AddIdentity<ShopUser, IdentityRole>(options =>
 {
     options.Password.RequireNonAlphanumeric = false;
@@ -56,6 +63,8 @@ builder.Services.AddIdentity<ShopUser, IdentityRole>(options =>
 })
     .AddEntityFrameworkStores<WebshopDbContext>()
     .AddDefaultTokenProviders();
+builder.Services.AddScoped<IUserClaimsPrincipalFactory<ShopUser>, ShopUserClaimsPrincipalFactory>();
+
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -69,7 +78,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorizationBuilder()
+    .AddPolicy("Seller", policy => policy.Requirements.Add(new MinimumUserLeveLRequirement(UserLevel.Seller)))
+    .AddPolicy("Admin", policy => policy.Requirements.Add(new MinimumUserLeveLRequirement(UserLevel.Admin)));
 
 var app = builder.Build();
 

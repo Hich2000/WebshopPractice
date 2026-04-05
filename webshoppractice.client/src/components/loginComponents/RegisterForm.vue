@@ -1,11 +1,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
+import { register } from '@/composables/user';
 
 interface UserRegistrationData {
   name: string,
   email: string,
   password: string,
-  message: string | null
+  error: string | null,
+  success: string | null
 }
 
 export default defineComponent({
@@ -14,19 +16,37 @@ export default defineComponent({
       name: '',
       email: '',
       password: '',
-      message: null
+      error: null,
+      success: null
     }
   },
+  methods: {
+    async register() {
+      const response = await register(this.name, this.email, this.password);
+      if (response) {
+        this.success = "Account successfully registered";
+      }  else {
+        this.error = "Account registration failed";
+      }
+    }
+  }
 });
 </script>
 
 <template>
   <div class="form-div">
-    <form @submit.prevent="">
+    <form @submit.prevent="register">
       <h1>Register</h1>
 
       <p class="form-error" style="color: black !important;">
-        Don't have an account yet? Register now!
+        Don't have an account yet? Register now.
+      </p>
+
+      <p v-if="error" class="form-error">
+        {{ error }}
+      </p>
+      <p v-if="success" class="form-success">
+        {{ success }}
       </p>
 
       <p>

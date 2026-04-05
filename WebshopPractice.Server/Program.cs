@@ -51,6 +51,7 @@ builder.Services.AddIdentity<ShopUser, IdentityRole>(options =>
     options.Password.RequiredLength = 16;
     options.Password.RequireUppercase = false;
     options.Password.RequireLowercase = false;
+    options.Password.RequireDigit = false;
     options.User.RequireUniqueEmail = true;
 })
     .AddEntityFrameworkStores<WebshopDbContext>()

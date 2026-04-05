@@ -61,11 +61,36 @@ export async function login(email: string, password: string): Promise<boolean> {
   return true
 }
 
+export async function register(name: string, email: string, password: string): Promise<boolean> {
+  const response = await fetch("/register/user", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: name,
+      email: email,
+      password: password
+    })
+  });
+
+  const test = await response.text()
+  console.log(test)
+
+  if (!response.ok || response.status == 401) {
+    return false
+  }
+
+  return true;
+}
+
 export function useUser() {
   return {
     currentUser: readonly(currentUser),
     fetchCurrentUser,
     logout,
-    login
+    login,
+    register
   }
 }

@@ -8,7 +8,6 @@ using WebshopPractice.Server.Helpers;
 namespace WebshopPractice.Server.Controllers;
 
 [ApiController]
-[Authorize(Policy = "Admin")]
 [Route("[controller]")]
 public class ShopUserController(
     WebshopDbContext db
@@ -20,6 +19,7 @@ public class ShopUserController(
 
     [HttpGet]
     [Route("Paged")]
+    [Authorize(Policy = "Admin")]
     public async Task<PaginatedTable<ShopUserDTO>> GetPaged(int pageNumber = 1, int pageSize = _smallestPageLength)
     {
         if (!_allowedPageLength.Contains(pageSize)) pageSize = _smallestPageLength;
@@ -53,6 +53,7 @@ public class ShopUserController(
     }
 
     [HttpGet("{id}")]
+    [Authorize]
     public async Task<ActionResult<ShopUserDTO>> Get(string id)
     {
         var user = await _db.ShopUsers
@@ -71,6 +72,7 @@ public class ShopUserController(
     }
 
     [HttpPatch("{id}")]
+    [Authorize]
     public async Task<IActionResult> Patch(string id, [FromBody] ShopUserDTO updatedUser)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
@@ -94,6 +96,7 @@ public class ShopUserController(
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Policy = "Admin")]
     public async Task<IActionResult> Delete(string id)
     {
         try

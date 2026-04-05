@@ -21,17 +21,17 @@ export default defineComponent({
 </script>
 
 <template>
-  <div class="formDiv">
+  <div class="form-div">
     <form @submit.prevent="">
       <p>Register</p>
       <p>
-        <input v-model="name" class="formInput" type="text" placeholder="Full name" required>
+        <input v-model="name" class="form-input" type="text" placeholder="Full name" required>
       </p>
       <p>
-        <input v-model="username" class="formInput" type="text" placeholder="E-mail" required>
+        <input v-model="username" class="form-input" type="text" placeholder="E-mail" required>
       </p>
       <p>
-        <input v-model="password" class="formInput" type="password" placeholder="Password" required>
+        <input v-model="password" class="form-input" type="password" placeholder="Password" required>
       </p>
       <PButton type="submit" label="Login" />
     </form>

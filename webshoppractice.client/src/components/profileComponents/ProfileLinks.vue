@@ -28,5 +28,5 @@ export default defineComponent({
 </script>
 
 <template>
-  <PMenu class="formDiv" :model="menuItems" />
+  <PMenu class="form-div" :model="menuItems" />
 </template>

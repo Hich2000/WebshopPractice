@@ -1,11 +1,12 @@
-.formDiv {
+.form-div {
   text-align: center;
-  padding: 6rem;
+  padding: 0 6rem;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   border-radius: 6px;
   height: 100%;
+  min-height: 30rem;
 }
 
-.formInput {
+.form-input {
   width: 100%;
 }

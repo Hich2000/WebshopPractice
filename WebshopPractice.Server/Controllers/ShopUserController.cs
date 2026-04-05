@@ -52,7 +52,7 @@ public class ShopUserController(
         };
     }
 
-    [HttpGet]
+    [HttpGet("{id}")]
     public async Task<ActionResult<ShopUserDTO>> Get(string id)
     {
         var user = await _db.ShopUsers

@@ -3,7 +3,7 @@ import { defineComponent } from 'vue';
 
 interface UserRegistrationData {
   name: string,
-  username: string,
+  email: string,
   password: string,
   message: string | null
 }
@@ -12,7 +12,7 @@ export default defineComponent({
   data(): UserRegistrationData {
     return {
       name: '',
-      username: '',
+      email: '',
       password: '',
       message: null
     }
@@ -23,17 +23,26 @@ export default defineComponent({
 <template>
   <div class="form-div">
     <form @submit.prevent="">
-      <p>Register</p>
+      <h1>Register</h1>
+
+      <p class="form-error" style="color: black !important;">
+        Don't have an account yet? Register now!
+      </p>
+
       <p>
-        <input v-model="name" class="form-input" type="text" placeholder="Full name" required>
+        <label for="name" class="form-label">Name</label>
+        <input id="name" v-model="name" class="form-input" type="text" placeholder="Full name" required>
       </p>
       <p>
-        <input v-model="username" class="form-input" type="text" placeholder="E-mail" required>
+        <label for="email" class="form-label">E-mail</label>
+        <input id="email" v-model="email" class="form-input" type="text" placeholder="E-mail" required>
       </p>
       <p>
-        <input v-model="password" class="form-input" type="password" placeholder="Password" required>
+        <label for="password" class="form-label">Password</label>
+        <input id="password" v-model="password" class="form-input" type="password" placeholder="Password" required>
       </p>
-      <PButton type="submit" label="Login" />
+      <br>
+      <PButton type="submit" label="Register" />
     </form>
   </div>
 </template>

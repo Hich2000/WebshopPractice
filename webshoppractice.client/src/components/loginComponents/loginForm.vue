@@ -45,20 +45,21 @@ export default defineComponent({
 <template>
   <div class="form-div">
     <form @submit.prevent="onsubmit">
-      <p v-if="error" style="color: red;">
+      <h1>Login</h1>
+
+      <p class="form-error">
         {{ error }}
       </p>
 
-      <p><h1>Login</h1></p>
-
       <p>
-        <label for="email">E-mail</label>
+        <label for="email" class="form-label">E-mail</label>
         <input id="email" v-model="email" class="form-input" type="text" placeholder="E-mail" required>
       </p>
       <p>
-        <label for="password">Password</label>
+        <label for="password" class="form-label">Password</label>
         <input id="password" v-model="password" class="form-input" type="password" placeholder="Password" required>
       </p>
+      <br>
       <PButton type="submit" label="Login" :loading="busy" />
     </form>
   </div>

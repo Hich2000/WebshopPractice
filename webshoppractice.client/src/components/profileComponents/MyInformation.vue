@@ -31,7 +31,6 @@ export default defineComponent({
   methods: {
     async onSubmit() {
       const response = await updateInfo(this.id, this.name, this.email);
-      console.log(response);
       if (response) {
         this.success = "Account information updated successfully";
       }  else {

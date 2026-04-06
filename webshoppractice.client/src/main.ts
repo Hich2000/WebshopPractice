@@ -20,6 +20,7 @@ import LoginView from './views/LoginView.vue'
 import ProductPage from './components/productComponents/ProductPage.vue'
 import ProfileView from './views/ProfileView.vue'
 import MyInformation from './components/profileComponents/MyInformation.vue'
+import ChangeMyPassword from './components/profileComponents/ChangeMyPassword.vue'
 
 const routes = [
   { path: '/', component: ProductPage },
@@ -37,7 +38,7 @@ const routes = [
       {
         path: 'Password',
         meta: { requiresAuth: true },
-        component: ProfileView
+        component: ChangeMyPassword
       }
     ]
   },

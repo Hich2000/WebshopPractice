@@ -1,12 +1,12 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { register } from '@/composables/user';
+import { register, type PassWordError } from '@/composables/user';
 
 interface UserRegistrationData {
   name: string,
   email: string,
   password: string,
-  error: string | null,
+  error: PassWordError[] | null,
   success: string | null
 }
 
@@ -23,10 +23,10 @@ export default defineComponent({
   methods: {
     async register() {
       const response = await register(this.name, this.email, this.password);
-      if (response) {
+      if (response === true) {
         this.success = "Account successfully registered";
       }  else {
-        this.error = "Account registration failed";
+        this.error = response;
       }
     }
   }
@@ -42,8 +42,8 @@ export default defineComponent({
         Don't have an account yet? Register now.
       </p>
 
-      <p v-if="error" class="form-error">
-        {{ error }}
+      <p v-for="e in error" :key="e.code" class="form-error">
+        {{ e.description }}
       </p>
       <p v-if="success" class="form-success">
         {{ success }}

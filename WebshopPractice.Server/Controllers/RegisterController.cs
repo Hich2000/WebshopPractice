@@ -24,8 +24,7 @@ public class RegisterController(
 
         if (!result.Succeeded)
         {
-            var errors = result.Errors.Select(e => e.Description);
-            return BadRequest(new { errors });
+            return Conflict(result.Errors);
         }
 
         return Ok();
@@ -42,8 +41,7 @@ public class RegisterController(
 
         if (!result.Succeeded)
         {
-            var errors = result.Errors.Select(e => e.Description);
-            return BadRequest(new { errors });
+            return Conflict(result.Errors);
         }
 
         return Ok();
@@ -62,14 +60,14 @@ public class RegisterController(
         if (!correctPassword) return BadRequest("Password is not correct.");
         if (body.NewPassword != body.VerifyNewPassword) return BadRequest("New password does not match verification field.");
 
-        var result = _userManager.ChangePasswordAsync(user, body.OldPassword, body.NewPassword);
+        var result = await _userManager.ChangePasswordAsync(user, body.OldPassword, body.NewPassword);
 
-        if (result.IsCompletedSuccessfully)
+        if (result.Succeeded)
         {
             return Ok();
         } else
         {
-            return Conflict("Could not update password.");
+            return Conflict(result.Errors);
         }
     }
 

@@ -6,6 +6,20 @@ export interface User {
   email: string
 }
 
+export interface PassWordError {
+  code: string,
+  description: string
+}
+
+function isPasswordErrorArray(data: unknown): data is PassWordError[] {
+  return Array.isArray(data) &&
+    data.every(
+      (item) =>
+        typeof item.code === 'string' &&
+        typeof item.description === 'string'
+    );
+}
+
 const currentUser = ref<User | null>(null)
 const initialized = ref(false)
 
@@ -63,7 +77,7 @@ export async function login(email: string, password: string): Promise<boolean> {
   return true
 }
 
-export async function register(name: string, email: string, password: string): Promise<boolean> {
+export async function register(name: string, email: string, password: string): Promise<true | PassWordError[]> {
   const response = await fetch("/register/user", {
     method: "POST",
     credentials: "include",
@@ -77,8 +91,19 @@ export async function register(name: string, email: string, password: string): P
     })
   });
 
-  if (!response.ok || response.status == 401) {
-    return false
+  if (response.status == 409) {
+    const responseErrors = await response.json();
+    if (isPasswordErrorArray(responseErrors)) {
+      const passwordErrors = responseErrors;
+      return passwordErrors;
+    } else {
+      return [
+        {
+          code: "unkownError",
+          description: "An unknown error has occurred."
+        }
+      ]
+    }
   }
 
   return true;
@@ -92,19 +117,47 @@ export async function updateInfo(id: string, name: string, email: string): Promi
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-
       userId: id,
       email: email,
       name: name
-
     })
   });
 
-  const test = await response.text()
-  console.log(test)
-
   if (!response.ok || response.status == 401) {
     return false
+  }
+
+  return true;
+}
+
+export async function changeMyPassword(oldPassword: string, newPassword: string, verifyNewPassword: string): Promise<true | PassWordError[]> {
+
+  const response = await fetch('/register/changeOwnPassword', {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      oldPassword: oldPassword,
+      newPassword: newPassword,
+      verifyNewPassword: verifyNewPassword
+    })
+  });
+
+  if (response.status == 409) {
+    const responseErrors = await response.json();
+    if (isPasswordErrorArray(responseErrors)) {
+      const passwordErrors = responseErrors;
+      return passwordErrors;
+    } else {
+      return [
+        {
+          code: "unkownError",
+          description: "An unknown error has occurred."
+        }
+      ]
+    }
   }
 
   return true;
@@ -117,6 +170,7 @@ export function useUser() {
     logout,
     login,
     register,
-    updateInfo
+    updateInfo,
+    changeMyPassword
   }
 }

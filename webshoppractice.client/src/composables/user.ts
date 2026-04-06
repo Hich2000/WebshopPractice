@@ -1,6 +1,7 @@
 import { ref, readonly } from "vue";
 
 export interface User {
+  id: string,
   name: string,
   email: string
 }
@@ -21,6 +22,7 @@ export async function fetchCurrentUser(force = false): Promise<User | null> {
   } else {
     const data = await response.json()
     currentUser.value = {
+      id: data.id,
       name: data.name,
       email: data.email
     }
@@ -75,6 +77,29 @@ export async function register(name: string, email: string, password: string): P
     })
   });
 
+  if (!response.ok || response.status == 401) {
+    return false
+  }
+
+  return true;
+}
+
+export async function updateInfo(id: string, name: string, email: string): Promise<boolean> {
+  const response = await fetch(`/shopUser/${id}`, {
+    method: "PATCH",
+    credentials: "include",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+
+      userId: id,
+      email: email,
+      name: name
+
+    })
+  });
+
   const test = await response.text()
   console.log(test)
 
@@ -91,6 +116,7 @@ export function useUser() {
     fetchCurrentUser,
     logout,
     login,
-    register
+    register,
+    updateInfo
   }
 }

@@ -51,15 +51,15 @@ export default defineComponent({
 
       <p>
         <label for="name" class="form-label">Name</label>
-        <input id="name" v-model="name" class="form-input" type="text" placeholder="Full name" required>
+        <input id="name" v-model="name" class="form-input" type="text" placeholder="Full name" autocomplete="off" required>
       </p>
       <p>
         <label for="email" class="form-label">E-mail</label>
-        <input id="email" v-model="email" class="form-input" type="text" placeholder="E-mail" required>
+        <input id="email" v-model="email" class="form-input" type="text" placeholder="E-mail" autocomplete="new-username" required>
       </p>
       <p>
         <label for="password" class="form-label">Password</label>
-        <input id="password" v-model="password" class="form-input" type="password" placeholder="Password" required>
+        <input id="password" v-model="password" class="form-input" type="password" placeholder="Password" autocomplete="new-password" required>
       </p>
       <br>
       <PButton type="submit" label="Register" />

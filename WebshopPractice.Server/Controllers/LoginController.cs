@@ -26,8 +26,9 @@ public class LoginController(
 
         return Ok(new
         {
+            id = user.Id,
             name = user.Name,
-            username = user.UserName
+            email = user.Email
         });
     }
 

@@ -27,13 +27,16 @@ const routes = [
   {
     path: '/Profile',
     component: ProfileView,
+    meta: { requiresAuth: true },
     children: [
       {
         path: 'Me',
+        meta: { requiresAuth: true },
         component: MyInformation
       },
       {
         path: 'Password',
+        meta: { requiresAuth: true },
         component: ProfileView
       }
     ]
@@ -44,6 +47,18 @@ export const router = createRouter({
   history: createWebHistory(),
   routes,
 })
+
+//setup guard logic
+import { useUser } from '@/composables/user';
+const { fetchCurrentUser } = useUser()
+router.beforeEach(async (to, from, next)  => {
+  const currentUser = await fetchCurrentUser();
+  if (to.meta.requiresAuth && currentUser == null) {
+    next('/login');
+  } else {
+    next();
+  }
+});
 
 app.use(router)
 

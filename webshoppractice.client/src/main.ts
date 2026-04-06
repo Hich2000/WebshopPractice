@@ -54,7 +54,10 @@ const { fetchCurrentUser } = useUser()
 router.beforeEach(async (to, from, next)  => {
   const currentUser = await fetchCurrentUser();
   if (to.meta.requiresAuth && currentUser == null) {
-    next('/login');
+    next({
+      path: '/login',
+      query: { redirect: to.fullPath }
+    });
   } else {
     next();
   }

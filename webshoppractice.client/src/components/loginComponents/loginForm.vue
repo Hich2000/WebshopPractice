@@ -32,7 +32,7 @@ export default defineComponent({
       if (success) {
         this.busy = false
         fetchCurrentUser(true)
-        router.push('/')
+        router.push(this.$route.query.redirect as string || '/')
       } else {
         this.error = "Invalid email or password.";
         this.busy = false

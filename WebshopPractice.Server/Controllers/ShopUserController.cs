@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebshopPractice.Server.Data.Context;
 using WebshopPractice.Server.Data.DTO;
+using WebshopPractice.Server.Data.Models;
 using WebshopPractice.Server.Helpers;
 
 namespace WebshopPractice.Server.Controllers;
@@ -10,12 +12,14 @@ namespace WebshopPractice.Server.Controllers;
 [ApiController]
 [Route("[controller]")]
 public class ShopUserController(
+    UserManager<ShopUser> userManager,
     WebshopDbContext db
 ) : Controller
 {
     private const int _smallestPageLength = 10;
     private readonly int[] _allowedPageLength = [_smallestPageLength, 25, 50];
     private readonly WebshopDbContext _db = db;
+    private readonly UserManager<ShopUser> _userManager = userManager;
 
     [HttpGet]
     [Route("Paged")]
@@ -77,6 +81,14 @@ public class ShopUserController(
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         if (id != updatedUser.UserId) return BadRequest();
+
+        //if the currently logged in user is not an admin then they cannot update anyone excepts themselves
+        bool isAdmin = User.Claims.FirstOrDefault(c => c.Type == "UserLevel")?.Value == UserLevel.Admin.ToString();
+        ShopUser? currentUser = await _userManager.GetUserAsync(User);
+        if ( !isAdmin && currentUser?.Id != id)
+        {
+            return BadRequest("You are not authorized to update this user.");
+        }
 
         try
         {

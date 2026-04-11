@@ -4,7 +4,7 @@ import { useUser, type User } from '@/composables/user'
 import { useNavItems, type NavItemList } from '@/composables/mainMenuItems';
 
 const { currentUser, fetchCurrentUser } = useUser()
-const { navItemList } = useNavItems()
+const { navItemList, buildNavList } = useNavItems()
 
 interface NavBarData {
   navItemList: Ref<NavItemList>
@@ -20,6 +20,16 @@ export default defineComponent({
   },
   async created() {
     await fetchCurrentUser()
+    await buildNavList()
+  },
+  watch: {
+    currentUser: {
+      async handler() {
+        await buildNavList();
+      },
+      deep: false, // optional here
+      immediate: false // don't run on initial setup
+    }
   },
   methods: {
     toggle(event: Event) {

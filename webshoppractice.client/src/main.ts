@@ -1,4 +1,5 @@
 import './assets/main.css'
+import './assets/custom.css'
 import PrimeVue from 'primevue/config'
 import Aura from '@primeuix/themes/aura'
 import 'primeicons/primeicons.css'
@@ -17,10 +18,30 @@ const app = createApp(App)
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from './views/LoginView.vue'
 import ProductPage from './components/productComponents/ProductPage.vue'
+import ProfileView from './views/ProfileView.vue'
+import MyInformation from './components/profileComponents/MyInformation.vue'
+import ChangeMyPassword from './components/profileComponents/ChangeMyPassword.vue'
 
 const routes = [
   { path: '/', component: ProductPage },
   { path: '/Login', component: LoginView },
+  {
+    path: '/Profile',
+    component: ProfileView,
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: 'Me',
+        meta: { requiresAuth: true },
+        component: MyInformation
+      },
+      {
+        path: 'Password',
+        meta: { requiresAuth: true },
+        component: ChangeMyPassword
+      }
+    ]
+  },
 ]
 
 export const router = createRouter({
@@ -28,12 +49,27 @@ export const router = createRouter({
   routes,
 })
 
+//setup guard logic
+import { useUser } from '@/composables/user';
+const { fetchCurrentUser } = useUser()
+router.beforeEach(async (to, from, next)  => {
+  const currentUser = await fetchCurrentUser();
+  if (to.meta.requiresAuth && currentUser == null) {
+    next({
+      path: '/login',
+      query: { redirect: to.fullPath }
+    });
+  } else {
+    next();
+  }
+});
+
 app.use(router)
 
 // components
-import Button from 'primevue/button'
+import { Button, Menubar, Menu } from 'primevue'
 app.component('PButton', Button)
-import Menubar from 'primevue/menubar'
 app.component('PMenubar', Menubar)
+app.component('PMenu', Menu)
 
 app.mount('#app');

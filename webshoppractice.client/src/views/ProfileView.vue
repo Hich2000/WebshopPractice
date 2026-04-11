@@ -1,29 +1,27 @@
 <script lang="ts">
+import ProfileLinks from '@/components/profileComponents/ProfileLinks.vue';
 import { defineComponent } from 'vue';
-import LoginForm from '@/components/loginComponents/LoginForm.vue';
-import RegisterForm from '@/components/loginComponents/RegisterForm.vue';
 
 export default defineComponent({
   components: {
-    LoginForm,
-    RegisterForm
+    ProfileLinks
   }
 })
 </script>
 
 <template>
-  <div class="login-grid">
+  <div class="profile-grid">
     <div>
-      <LoginForm />
+      <ProfileLinks />
     </div>
     <div>
-      <RegisterForm />
+      <RouterView />
     </div>
   </div>
 </template>
 
 <style scoped lang="css">
-.login-grid {
+.profile-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   padding: 1rem;

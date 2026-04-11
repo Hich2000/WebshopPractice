@@ -1,0 +1,31 @@
+.form-div {
+  text-align: center;
+  padding: 0 6rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  height: 100%;
+  min-height: 30rem;
+}
+
+.form-input {
+  width: 100%;
+}
+
+.form-label {
+  width: 100%;
+  display: block;
+  text-align: left;
+  font-weight: bold;
+}
+
+.form-error {
+  color: red;
+  height: 60px;
+  text-align: center;
+}
+
+.form-success {
+  color: green;
+  height: 60px;
+  text-align: center;
+}

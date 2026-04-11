@@ -1,8 +1,12 @@
 <script lang="ts">
+import { router } from '@/main';
 import { defineComponent } from 'vue';
+import { useUser } from '@/composables/user'
+
+const { fetchCurrentUser, login } = useUser()
 
 interface LoginFormData {
-  username: string,
+  email: string,
   password: string,
   error: null | string,
   busy: boolean
@@ -11,110 +15,52 @@ interface LoginFormData {
 export default defineComponent({
   data(): LoginFormData {
     return {
-      username: '',
+      email: '',
       password: '',
       error: null,
       busy: false
     }
   },
   methods: {
-    async login() {
+    async onsubmit() {
       this.error = null;
       this.busy = true;
 
-      try {
-        const response = await fetch("/login/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            username: this.username,
-            password: this.password
-          })
-        })
-        if (!response.ok) {
-          throw new Error();
-        }
-        // Todo now that we are logged in we can redirect to a user info page
-        console.log(response);
+      const success = await login(this.email, this.password)
+      console.log(success);
+
+      if (success) {
         this.busy = false
-      } catch (e: unknown) {
-        console.log(e);
-        this.error = "Invalid username or password.";
+        fetchCurrentUser(true)
+        router.push(this.$route.query.redirect as string || '/')
+      } else {
+        this.error = "Invalid email or password.";
         this.busy = false
       }
     },
-    async me() {
-      this.error = null;
-      try {
-        const response = await fetch("login/me", {
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json"
-          },
-        })
-
-        if (!response.ok) {
-          throw new Error()
-        }
-
-        const result = await response.json()
-        this.error = result.username;
-      } catch (e: unknown) {
-        console.log(e)
-        this.error = "not logged in"
-      }
-    },
-    async logout() {
-      this.error = null;
-      const response = await fetch("login/logout", {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json"
-        },
-      })
-      if (!response.ok) {
-        throw new Error();
-      }
-      this.error = "logged out";
-    }
   }
 });
 </script>
 
 <template>
-  <div class="formDiv">
-    <form @submit.prevent="login">
-      <p v-if="error" style="color: red;">
+  <div class="form-div">
+    <form @submit.prevent="onsubmit">
+      <h1>Login</h1>
+
+      <p class="form-error">
         {{ error }}
       </p>
 
-      <p>Login</p>
       <p>
-        <input v-model="username" class="loginInput" type="text" placeholder="E-mail" required>
+        <label for="email" class="form-label">E-mail</label>
+        <input id="email" v-model="email" class="form-input" type="text" placeholder="E-mail" required>
       </p>
       <p>
-        <input v-model="password" class="loginInput" type="password" placeholder="Password" required>
+        <label for="password" class="form-label">Password</label>
+        <input id="password" v-model="password" class="form-input" type="password" placeholder="Password" required>
       </p>
+      <br>
       <PButton type="submit" label="Login" :loading="busy" />
     </form>
-
-    <PButton type="button" label="me" v-on:click="me" />
-    <PButton type="button" label="logout" v-on:click="logout" />
   </div>
 </template>
-
-<style scoped>
-.formDiv {
-  text-align: center;
-  padding: 6rem;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.loginInput {
-  width: 100%;
-}
-</style>

@@ -1,50 +1,58 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
-using WebshopPractice.Server.Data.Repositories;
+using WebshopPractice.Server.Data.Models;
 
 namespace WebshopPractice.Server.Controllers;
 
 [ApiController]
-[Route("[controller]")]
-public class LoginController(UserRepository userRepository) : Controller
+[Route("")]
+public class LoginController(
+    UserManager<ShopUser> userManager,
+    SignInManager<ShopUser> signInManager
+) : Controller
 {
-    private readonly UserRepository _userRepository = userRepository;
+    private readonly UserManager<ShopUser> _userManager = userManager;
+    private readonly SignInManager<ShopUser> _signInManager = signInManager;
 
     [HttpGet("me")]
     [Authorize]
     public async Task<IActionResult> me()
     {
-        var username = User.Identity?.Name;
+        var user = await _userManager.GetUserAsync(User);
+
+        if (user == null)
+            return Unauthorized();
+
         return Ok(new
         {
-            username
+            id = user.Id,
+            name = user.Name,
+            email = user.Email
         });
     }
 
-    [HttpPost]
-    [Route("[controller]")]
+    [HttpPost("login")]
     public async Task<IActionResult> Login([FromBody] LoginRequestBody body)
     {
-        var user = await _userRepository.GetUser(body.Username);
+        var user = await _userManager.FindByEmailAsync(body.Email);
         // Todo add propery security on password
-        if (user == null || user.Password != body.Password)
+        if (user == null)
         {
             return Unauthorized("Invalid credentials");
         }
 
-        var claims = new List<Claim>
+        var result = await _signInManager.PasswordSignInAsync(
+            user,
+            body.Password,
+            isPersistent: false,
+            lockoutOnFailure: false
+        );
+
+        if (!result.Succeeded)
         {
-            new(ClaimTypes.Name, user.Username),
-            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
-        };
-
-        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
-
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+            return Unauthorized("Invalid credentials");
+        }
 
         return Ok();
     }
@@ -52,13 +60,13 @@ public class LoginController(UserRepository userRepository) : Controller
     [HttpPost("logout")]
     public async Task<IActionResult> Logout()
     {
-        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+        await _signInManager.SignOutAsync();
         return Ok();
     }
 
     public class LoginRequestBody
     {
-        public required string Username { get; set; }
+        public required string Email { get; set; }
         public required string Password { get; set; }
     }
 }

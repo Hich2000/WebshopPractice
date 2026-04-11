@@ -5,18 +5,18 @@
 namespace WebshopPractice.Server.Migrations
 {
     /// <inheritdoc />
-    public partial class RootTestingUser : Migration
+    public partial class RequiredEmail : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(@"INSERT INTO Users (Name, Username, Password, UserLevel) VALUES ('Root', 'root@admin.com', 'password', 1)");
+
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.Sql(@"DELETE FROM Users WHERE Username = 'root@admin.com'");
+
         }
     }
 }

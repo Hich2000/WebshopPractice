@@ -40,7 +40,7 @@ async function buildNavList(): Promise<NavItemList> {
   //admin specific items
   if (currentUser.value?.level === "Admin") {
     const adminMenuItems: MenuItem[] = [];
-    adminMenuItems.push({ label: "Admin Panel", command: () => router.push("/Placeholder") });
+    adminMenuItems.push({ label: "Admin Panel", command: () => router.push("/Admin") });
     mainMenuItems.push(...adminMenuItems);
   }
 

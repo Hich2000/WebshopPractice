@@ -46,6 +46,21 @@ const routes = [
       }
     ]
   },
+  {
+    path: '/Admin',
+    component: AdminMenu,
+    meta: { requiresAuth: true,  },
+    children: [
+      {
+        path: '',
+        component: AdminLinks,
+      },
+      {
+        path: 'Users',
+        component: PlaceHolderView,
+      }
+    ]
+  }
 ]
 
 export const router = createRouter({
@@ -76,6 +91,8 @@ app.use(router)
 
 // components
 import { Button, Menubar, Menu } from 'primevue'
+import AdminMenu from './views/adminViews/AdminMenu.vue'
+import AdminLinks from './components/adminComponents/adminMenuComponents/AdminLinks.vue'
 app.component('PButton', Button)
 app.component('PMenubar', Menubar)
 app.component('PMenu', Menu)

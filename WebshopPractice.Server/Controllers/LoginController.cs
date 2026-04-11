@@ -17,9 +17,9 @@ public class LoginController(
 
     [HttpGet("me")]
     [Authorize]
-    public async Task<IActionResult> me()
+    public async Task<IActionResult> Me()
     {
-        var user = await _userManager.GetUserAsync(User);
+        ShopUser? user = await _userManager.GetUserAsync(User);
 
         if (user == null)
             return Unauthorized();
@@ -28,7 +28,8 @@ public class LoginController(
         {
             id = user.Id,
             name = user.Name,
-            email = user.Email
+            email = user.Email,
+            level = user.UserLevel.ToString()
         });
     }
 

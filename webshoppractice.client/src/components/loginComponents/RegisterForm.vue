@@ -1,6 +1,8 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { register, type PassWordError } from '@/composables/user';
+import { useUser, type PassWordError } from '@/composables/user';
+
+const { register } = useUser();
 
 interface UserRegistrationData {
   name: string,

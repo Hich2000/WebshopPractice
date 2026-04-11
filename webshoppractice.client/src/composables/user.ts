@@ -24,7 +24,7 @@ function isPasswordErrorArray(data: unknown): data is PassWordError[] {
 const currentUser = ref<User | null>(null)
 const initialized = ref(false)
 
-export async function fetchCurrentUser(force = false): Promise<User | null> {
+async function fetchCurrentUser(force = false): Promise<User | null> {
   if (initialized.value && !force) {
     return currentUser.value
   }
@@ -48,7 +48,7 @@ export async function fetchCurrentUser(force = false): Promise<User | null> {
   return currentUser.value
 }
 
-export async function logout(): Promise<void> {
+async function logout(): Promise<void> {
   await fetch('/logout', {
     credentials: 'include',
     method: 'POST'
@@ -57,7 +57,7 @@ export async function logout(): Promise<void> {
   await fetchCurrentUser(true)
 }
 
-export async function login(email: string, password: string): Promise<boolean> {
+async function login(email: string, password: string): Promise<boolean> {
 
   const response = await fetch("/login", {
     method: 'POST',
@@ -79,7 +79,7 @@ export async function login(email: string, password: string): Promise<boolean> {
   return true
 }
 
-export async function register(name: string, email: string, password: string): Promise<true | PassWordError[]> {
+async function register(name: string, email: string, password: string): Promise<true | PassWordError[]> {
   const response = await fetch("/register/user", {
     method: "POST",
     credentials: "include",
@@ -111,7 +111,7 @@ export async function register(name: string, email: string, password: string): P
   return true;
 }
 
-export async function updateInfo(id: string, name: string, email: string): Promise<boolean> {
+async function updateInfo(id: string, name: string, email: string): Promise<boolean> {
   const response = await fetch(`/shopUser/${id}`, {
     method: "PATCH",
     credentials: "include",
@@ -132,7 +132,8 @@ export async function updateInfo(id: string, name: string, email: string): Promi
   return true;
 }
 
-export async function changeMyPassword(oldPassword: string, newPassword: string, verifyNewPassword: string): Promise<true | PassWordError[]> {
+async function changeMyPassword(oldPassword: string, newPassword: string, verifyNewPassword: string)
+: Promise<true | PassWordError[]> {
 
   const response = await fetch('/register/changeOwnPassword', {
     method: "PATCH",

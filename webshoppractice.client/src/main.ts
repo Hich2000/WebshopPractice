@@ -22,10 +22,12 @@ import ProfileView from './views/ProfileView.vue'
 import MyInformation from './components/profileComponents/MyInformation.vue'
 import ChangeMyPassword from './components/profileComponents/ChangeMyPassword.vue'
 import NoAccessView from './views/NoAccessView.vue'
+import PlaceHolderView from './views/PlaceHolderView.vue'
 
 const routes = [
   { path: '/', component: ProductPage },
   { path: '/NoAccess', component: NoAccessView },
+  { path: '/Placeholder', component: PlaceHolderView },
   { path: '/Login', component: LoginView },
   {
     path: '/Profile',

@@ -31,7 +31,7 @@ public class ShopUserController(
 
         List<ShopUserDTO> userSlice = await _db.ShopUsers
             .AsNoTracking()
-            .OrderBy(u => u.Id)
+            .OrderBy(u => u.Name)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
             .Select(u => new ShopUserDTO
@@ -44,7 +44,7 @@ public class ShopUserController(
             .ToListAsync();
 
         int totalRecordCount = await _db.ShopUsers.CountAsync();
-        int pageCount = (int)Math.Ceiling((double)(totalRecordCount / pageSize));
+        int pageCount = (int)Math.Ceiling((double)totalRecordCount / pageSize);
 
         return new PaginatedTable<ShopUserDTO>
         {

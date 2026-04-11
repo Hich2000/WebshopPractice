@@ -21,6 +21,9 @@ import ProductPage from './components/productComponents/ProductPage.vue'
 import ProfileView from './views/ProfileView.vue'
 import MyInformation from './components/profileComponents/MyInformation.vue'
 import ChangeMyPassword from './components/profileComponents/ChangeMyPassword.vue'
+import AdminMenu from './views/adminViews/AdminMenu.vue'
+import AdminLinks from './components/adminComponents/adminMenuComponents/AdminLinks.vue'
+import UsersView from './views/adminViews/UsersView.vue'
 import NoAccessView from './views/NoAccessView.vue'
 import PlaceHolderView from './views/PlaceHolderView.vue'
 
@@ -57,7 +60,7 @@ const routes = [
       },
       {
         path: 'Users',
-        component: PlaceHolderView,
+        component: UsersView,
       }
     ]
   }
@@ -91,8 +94,6 @@ app.use(router)
 
 // components
 import { Button, Menubar, Menu } from 'primevue'
-import AdminMenu from './views/adminViews/AdminMenu.vue'
-import AdminLinks from './components/adminComponents/adminMenuComponents/AdminLinks.vue'
 app.component('PButton', Button)
 app.component('PMenubar', Menubar)
 app.component('PMenu', Menu)

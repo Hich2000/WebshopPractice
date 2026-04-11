@@ -3,7 +3,8 @@ import { ref, readonly } from "vue";
 export interface User {
   id: string,
   name: string,
-  email: string
+  email: string,
+  level: string
 }
 
 export interface PassWordError {
@@ -38,10 +39,12 @@ export async function fetchCurrentUser(force = false): Promise<User | null> {
     currentUser.value = {
       id: data.id,
       name: data.name,
-      email: data.email
+      email: data.email,
+      level: data.level
     }
   }
 
+  console.log(currentUser.value);
   initialized.value = true
   return currentUser.value
 }

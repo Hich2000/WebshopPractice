@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ref, type Ref } from 'vue';
+import { defineComponent, type Ref } from 'vue';
 import type { MenuItem } from 'primevue/menuitem';
 import { router } from '@/main';
 import { useUser, type User } from '@/composables/user'
@@ -9,7 +9,6 @@ const { currentUser, fetchCurrentUser, logout } = useUser()
 interface NavBarData {
   navItems: MenuItem[],
   userMenuItems: MenuItem[],
-  userMenuRef: Ref
   currentUser: Ref<User | null>
 }
 
@@ -35,7 +34,6 @@ export default defineComponent({
           }
         }
       ],
-      userMenuRef: ref(),
       currentUser: currentUser
     }
   },

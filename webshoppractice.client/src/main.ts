@@ -52,7 +52,12 @@ export const router = createRouter({
 //setup guard logic
 import { useUser } from '@/composables/user';
 const { fetchCurrentUser } = useUser()
-router.beforeEach(async (to, from, next)  => {
+router.beforeEach(async (to, _from, next)  => {
+
+  if (to.matched.length < 1) {
+    router.push('/');
+  }
+
   const currentUser = await fetchCurrentUser();
   if (to.meta.requiresAuth && currentUser == null) {
     next({

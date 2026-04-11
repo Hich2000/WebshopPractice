@@ -27,8 +27,6 @@ export default defineComponent({
       this.busy = true;
 
       const success = await login(this.email, this.password)
-      console.log(success);
-
       if (success) {
         this.busy = false
         fetchCurrentUser(true)

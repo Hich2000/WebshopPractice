@@ -44,7 +44,6 @@ export async function fetchCurrentUser(force = false): Promise<User | null> {
     }
   }
 
-  console.log(currentUser.value);
   initialized.value = true
   return currentUser.value
 }

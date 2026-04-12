@@ -24,6 +24,9 @@ export default defineComponent({
   },
   methods: {
     async register() {
+      this.success = null;
+      this.error = null;
+
       const response = await register(this.name, this.email, this.password);
       if (response === true) {
         this.success = "Account successfully registered";

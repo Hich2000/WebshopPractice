@@ -96,11 +96,4 @@ router.beforeEach(async (to, _from, next)  => {
 });
 
 app.use(router)
-
-// components
-import { Button, Menubar, Menu } from 'primevue'
-app.component('PButton', Button)
-app.component('PMenubar', Menubar)
-app.component('PMenu', Menu)
-
 app.mount('#app');

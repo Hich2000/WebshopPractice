@@ -1,78 +1,65 @@
-<script lang="ts">
-import { defineComponent, type Ref } from 'vue';
-import { useUser, type User } from '@/composables/user'
-import { useNavItems, type NavItemList } from '@/composables/mainMenuItems';
+<script setup lang="ts">
+import { ref, watch, onMounted, nextTick } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUser } from '@/composables/user'
+import { useNavItems } from '@/composables/mainMenuItems'
+import { Button, Menu, Menubar } from 'primevue'
+
+const router = useRouter()
 
 const { currentUser, fetchCurrentUser } = useUser()
 const { navItemList, buildNavList } = useNavItems()
 
-interface NavBarData {
-  navItemList: Ref<NavItemList>
-  currentUser: Ref<User | null>
-}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const userMenu = ref<any>(null)
 
-export default defineComponent({
-  data(): NavBarData {
-    return {
-      navItemList: navItemList,
-      currentUser: currentUser
-    }
-  },
-  async created() {
-    await fetchCurrentUser()
-    await buildNavList()
-  },
-  watch: {
-    currentUser: {
-      async handler() {
-        await buildNavList();
-      },
-      deep: false, // optional here
-      immediate: false // don't run on initial setup
-    }
-  },
-  methods: {
-    toggle(event: Event) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const menu = this.$refs.userMenu as any
-      menu.toggle(event)
-
-      this.$nextTick(() => {
-        const el = menu.container as HTMLElement
-        if (el) {
-          const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
-          el.style.left = `${rect.right - el.offsetWidth}px`
-          el.style.top = `${rect.bottom}px`
-        }
-      })
-    }
-  }
+onMounted(async () => {
+  await fetchCurrentUser()
+  await buildNavList()
 })
+
+watch(currentUser, async () => {
+  await buildNavList()
+})
+
+function toggle(event: Event) {
+  const menu = userMenu.value
+  menu.toggle(event)
+
+  nextTick(() => {
+    const el = menu.container as HTMLElement
+    if (el) {
+      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
+      el.style.left = `${rect.right - el.offsetWidth}px`
+      el.style.top = `${rect.bottom}px`
+    }
+  })
+}
 </script>
 
 <template>
-
-  <PMenubar class="mainNavBar" :model="navItemList.mainMenuItems">
+  <Menubar class="mainNavBar" :model="navItemList.mainMenuItems">
     <template #end>
       <div v-if="currentUser">
-        <PButton type="button" icon="pi pi-user" @click="toggle($event)" aria-haspopup="true"
+        <Button type="button" icon="pi pi-user" @click="toggle($event)" aria-haspopup="true"
           aria-controls="user_menu" />
-        <PMenu ref="userMenu" id="user_menu" :model="navItemList.userMenuItems" :popup="true">
+        <Menu ref="userMenu" id="user_menu" :model="navItemList.userMenuItems" :popup="true">
           <template #start>
             <div style="text-align: center;">
               Welcome {{ currentUser.name }}
             </div>
           </template>
-        </PMenu>
+        </Menu>
       </div>
+
       <div v-else>
-        <PButton @click="$router.push('/Login')">Login</PButton>
+        <Button @click="router.push('/Login')">Login</Button>
       </div>
     </template>
-  </PMenubar>
+  </Menubar>
 </template>
 
-<style lang="css" scoped>
+<style scoped>
 .mainNavBar {
   position: sticky;
   top: 1rem;

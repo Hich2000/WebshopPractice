@@ -1,15 +1,6 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import { RouterView } from 'vue-router';
 import MainNavBar from './components/navComponents/MainNavBar.vue';
-
-export default defineComponent({
-  components: {
-    RouterView,
-    MainNavBar
-  },
-})
-
 </script>
 
 <template>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import type { UserRegistrationData, PassWordError } from '@/composables/user';
+import { Button } from 'primevue';
 
 const props = defineProps<{
   register: (name: string, email: string, password: string) => Promise<true | PassWordError[]>,
@@ -63,7 +64,7 @@ async function onSubmit() {
       </p>
 
       <br>
-      <PButton type="submit" label="Register" />
+      <Button type="submit" label="Register" />
     </form>
   </div>
 </template>

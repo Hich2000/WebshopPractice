@@ -1,50 +1,36 @@
-<script lang="ts">
+<script setup lang="ts">
+import { ref, onMounted, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import ProductCard from '@/components/productComponents/ProductCard.vue'
-import { defineComponent } from 'vue';
 
 type Products = {
-  id: number,
-  name: string,
+  id: number
+  name: string
   price: number
-}[];
+}[]
 
-interface Data {
-  loading: boolean,
-  post: null | Products
+const route = useRoute()
+
+const loading = ref<boolean>(false)
+const post = ref<Products | null>(null)
+
+async function fetchData() {
+  post.value = null
+  loading.value = true
+
+  const response = await fetch('product')
+  if (response.ok) {
+    post.value = await response.json()
+    loading.value = false
+  }
 }
 
-export default defineComponent({
-  data(): Data {
-    return {
-      loading: false,
-      post: null
-    };
-  },
-  async created() {
-    // fetch the data when the view is created and the data is
-    // already being observed
-    await this.fetchData();
-  },
-  watch: {
-    // call again the method if the route changes
-    '$route': 'fetchData'
-  },
-  methods: {
-    async fetchData() {
-      this.post = null;
-      this.loading = true;
+onMounted(fetchData)
 
-      const response = await fetch('product');
-      if (response.ok) {
-        this.post = await response.json();
-        this.loading = false;
-      }
-    }
-  },
-  components: {
-    ProductCard
-  }
-});
+watch(
+  () => route.fullPath,
+  fetchData
+)
 </script>
 
 <template>

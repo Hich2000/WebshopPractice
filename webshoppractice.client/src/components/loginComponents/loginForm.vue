@@ -1,43 +1,33 @@
-<script lang="ts">
-import { router } from '@/main';
-import { defineComponent } from 'vue';
+<script setup lang="ts">
+import { ref } from 'vue'
+import { router } from '@/main'
+import { useRoute } from 'vue-router'
 import { useUser } from '@/composables/user'
+import { Button } from 'primevue'
 
 const { fetchCurrentUser, login } = useUser()
+const route = useRoute()
 
-interface LoginFormData {
-  email: string,
-  password: string,
-  error: null | string,
-  busy: boolean
-}
+const email = ref<string>('')
+const password = ref<string>('')
+const error = ref<string | null>(null)
+const busy = ref<boolean>(false)
 
-export default defineComponent({
-  data(): LoginFormData {
-    return {
-      email: '',
-      password: '',
-      error: null,
-      busy: false
-    }
-  },
-  methods: {
-    async onsubmit() {
-      this.error = null;
-      this.busy = true;
+async function onsubmit() {
+  error.value = null
+  busy.value = true
 
-      const success = await login(this.email, this.password)
-      if (success) {
-        this.busy = false
-        fetchCurrentUser(true)
-        router.push(this.$route.query.redirect as string || '/')
-      } else {
-        this.error = "Invalid email or password.";
-        this.busy = false
-      }
-    },
+  const success = await login(email.value, password.value)
+
+  if (success) {
+    busy.value = false
+    fetchCurrentUser(true)
+    router.push((route.query.redirect as string) || '/')
+  } else {
+    error.value = 'Invalid email or password.'
+    busy.value = false
   }
-});
+}
 </script>
 
 <template>
@@ -53,12 +43,17 @@ export default defineComponent({
         <label for="email" class="form-label">E-mail</label>
         <input id="email" v-model="email" class="form-input" type="text" placeholder="E-mail" required>
       </p>
+
       <p>
         <label for="password" class="form-label">Password</label>
         <input id="password" v-model="password" class="form-input" type="password" placeholder="Password" required>
       </p>
+
       <br>
-      <PButton type="submit" label="Login" :loading="busy" />
+
+      <Button type="submit" :disabled="busy">
+        {{ busy ? 'Logging in...' : 'Login' }}
+      </Button>
     </form>
   </div>
 </template>

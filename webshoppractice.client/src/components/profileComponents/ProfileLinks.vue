@@ -1,32 +1,22 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
-import type { MenuItem } from 'primevue/menuitem';
-import { router } from '@/main';
+<script setup lang="ts">
+import type { MenuItem } from 'primevue/menuitem'
+import { router } from '@/main'
+import { Menu } from 'primevue';
 
-export interface ProfileMenu {
-  menuItems: MenuItem[]
-}
-
-export default defineComponent({
-  data(): ProfileMenu {
-    return {
-      menuItems: [
-        {
-          label: 'My information',
-          icon: 'pi pi-user',
-          command: () => router.push('/Profile/Me')
-        },
-        {
-          label: 'Change password',
-          icon: 'pi pi-hashtag',
-          command: () => router.push('/Profile/Password')
-        }
-      ]
-    }
+const menuItems: MenuItem[] = [
+  {
+    label: 'My information',
+    icon: 'pi pi-user',
+    command: () => router.push('/Profile/Me')
+  },
+  {
+    label: 'Change password',
+    icon: 'pi pi-hashtag',
+    command: () => router.push('/Profile/Password')
   }
-})
+]
 </script>
 
 <template>
-  <PMenu class="form-div" :model="menuItems" />
+  <Menu class="form-div" :model="menuItems" />
 </template>

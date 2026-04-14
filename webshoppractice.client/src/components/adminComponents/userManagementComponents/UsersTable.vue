@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { Button, Column, DataTable } from 'primevue';
+import { Column, DataTable } from 'primevue';
 import { onMounted, ref, type Ref } from 'vue';
 import { type User } from '@/composables/user';
-import { router } from '@/main';
 
 //datatable state
 const items = ref<User[]>([])
@@ -40,7 +39,7 @@ async function loadData(pageNumber: number, pageSize: number) {
     totalRecordCount.value = data.totalRecordCount
 
 
-  } catch(error) {
+  } catch (error) {
     console.log(error);
   } finally {
     loading.value = false
@@ -48,7 +47,7 @@ async function loadData(pageNumber: number, pageSize: number) {
 }
 
 async function onPageChange(event: { page: number; rows: number; }) {
-  await loadData(event.page+1, event.rows);
+  await loadData(event.page + 1, event.rows);
 }
 
 onMounted(async () => {
@@ -57,15 +56,10 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div class="form-div">
-    <div style="width: 100%; text-align: start; padding: 1rem;" v-on:click="router.back()">
-      <Button>back</Button>
-    </div>
-
-    <DataTable :value="items" :lazy="true" :paginator="true" :rows="rows" :totalRecords="totalRecordCount" :loading="loading" @page="onPageChange">
-      <Column field="name" header="name" />
-      <Column field="email" header="email" />
-      <Column field="level" header="level" />
-    </DataTable>
-  </div>
+  <DataTable :value="items" :lazy="true" :paginator="true" :rows="rows" :totalRecords="totalRecordCount"
+    :loading="loading" @page="onPageChange">
+    <Column field="name" header="name" />
+    <Column field="email" header="email" />
+    <Column field="level" header="level" />
+  </DataTable>
 </template>

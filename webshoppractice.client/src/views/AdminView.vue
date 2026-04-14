@@ -6,7 +6,8 @@ import { Button } from 'primevue';
 
 <template>
   <div class="form-div">
-    <div style="width: 100%; text-align: start; padding: 1rem;" v-on:click="router.back()">
+    <div v-if="router.currentRoute.value.path != '/Admin'" style="width: 100%; text-align: start; padding: 1rem;"
+      v-on:click="router.back()">
       <Button>back</Button>
     </div>
     <RouterView />

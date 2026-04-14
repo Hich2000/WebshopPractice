@@ -23,9 +23,10 @@ import MyInformation from './components/profileComponents/MyInformation.vue'
 import ChangeMyPassword from './components/profileComponents/ChangeMyPassword.vue'
 import AdminView from './views/AdminView.vue'
 import AdminLinks from './components/adminComponents/adminMenuComponents/AdminLinks.vue'
-import UsersView from './views/adminViews/UsersView.vue'
 import NoAccessView from './views/NoAccessView.vue'
 import PlaceHolderView from './views/PlaceHolderView.vue'
+import UsersTable from './components/adminComponents/userManagementComponents/UsersTable.vue'
+
 
 const routes = [
   { path: '/', component: ProductPage },
@@ -60,7 +61,7 @@ const routes = [
       },
       {
         path: 'Users',
-        component: UsersView,
+        component: UsersTable,
       }
     ]
   }

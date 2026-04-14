@@ -26,7 +26,7 @@ import AdminLinks from './components/adminComponents/adminMenuComponents/AdminLi
 import NoAccessView from './views/NoAccessView.vue'
 import PlaceHolderView from './views/PlaceHolderView.vue'
 import UsersTable from './components/adminComponents/userManagementComponents/UsersTable.vue'
-
+import AdminUserForm from './components/adminComponents/userManagementComponents/AdminUserForm.vue'
 
 const routes = [
   { path: '/', component: ProductPage },
@@ -62,6 +62,10 @@ const routes = [
       {
         path: 'Users',
         component: UsersTable,
+      },
+      {
+        path: 'RegisterAdmin',
+        component: AdminUserForm
       }
     ]
   }

@@ -12,10 +12,15 @@ export default defineComponent({
     return {
       menuItems: [
         {
+          label: 'Register Admin',
+          icon: 'pi pi-user',
+          command: () => router.push('/Admin/RegisterAdmin')
+        },
+        {
           label: 'Users',
           icon: 'pi pi-user',
           command: () => router.push('/Admin/Users')
-        }
+        },
       ]
     }
   }

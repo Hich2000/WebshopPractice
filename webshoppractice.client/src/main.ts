@@ -14,6 +14,9 @@ const app = createApp(App)
     }
   });
 
+import { ConfirmationService } from 'primevue'
+app.use(ConfirmationService);
+
 //navigation
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from './views/LoginView.vue'
@@ -61,7 +64,7 @@ const routes = [
   {
     path: '/Admin',
     component: AdminView,
-    meta: { requiresAuth: true,  },
+    meta: { requiresAuth: true, },
     children: [
       {
         path: '',
@@ -87,7 +90,7 @@ export const router = createRouter({
 //setup guard logic
 import { useUser } from '@/composables/user';
 const { fetchCurrentUser } = useUser()
-router.beforeEach(async (to, _from, next)  => {
+router.beforeEach(async (to, _from, next) => {
   if (to.matched.length < 1) {
     router.push('/NoAccess');
   }

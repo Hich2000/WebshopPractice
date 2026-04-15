@@ -13,7 +13,6 @@ if (currentUser.value == null) {
 }
 
 async function deleteAccount() {
-  console.log(currentUser.value?.id);
   const success = await deleteUser(currentUser.value!.id);
   if (success) {
     await logout();

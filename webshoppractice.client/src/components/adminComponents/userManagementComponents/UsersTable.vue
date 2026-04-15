@@ -1,12 +1,17 @@
 <script setup lang="ts">
-import { Column, DataTable } from 'primevue';
+import { Button, Column, DataTable } from 'primevue';
 import { onMounted, ref, type Ref } from 'vue';
-import { type User } from '@/composables/user';
+import { useUser, type User } from '@/composables/user';
+import { useConfirm } from 'primevue/useconfirm'
+import { ConfirmPopup } from 'primevue';
+
+const { deleteUser } = useUser();
 
 //datatable state
-const items = ref<User[]>([])
+const items = ref<User[]>([]);
 const totalRecordCount: Ref<number> = ref(0);
 const loading = ref(true);
+const pageNumber = ref(1);
 
 //amount of rows shown per page
 const rows = ref(10);
@@ -24,7 +29,6 @@ async function loadData(pageNumber: number, pageSize: number) {
     }
     const data = await response.json();
 
-    console.log(data);
     items.value = [];
     data.body.forEach((element: { userId: string; name: string; email: string; userLevel: string; }) => {
       items.value.push({
@@ -38,7 +42,6 @@ async function loadData(pageNumber: number, pageSize: number) {
     rows.value = data.pageSize;
     totalRecordCount.value = data.totalRecordCount
 
-
   } catch (error) {
     console.log(error);
   } finally {
@@ -47,11 +50,33 @@ async function loadData(pageNumber: number, pageSize: number) {
 }
 
 async function onPageChange(event: { page: number; rows: number; }) {
+  pageNumber.value = event.page + 1;
   await loadData(event.page + 1, event.rows);
 }
 
+const confirm = useConfirm()
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const confirmDelete = (event: any, deleteIndex: number) => {
+  confirm.require({
+    target: event.currentTarget,
+    message: 'Are you sure you want to delete this user?',
+    icon: 'pi pi-exclamation-triangle',
+    acceptLabel: 'Yes',
+    rejectLabel: 'No',
+    accept: async () => {
+      const userToDelete = items.value[deleteIndex];
+      loading.value = true;
+      await deleteUser(userToDelete!.id);
+      await loadData(pageNumber.value, rows.value);
+    },
+    reject: () => {
+      console.log('Cancelled')
+    }
+  })
+}
+
 onMounted(async () => {
-  await loadData(1, rows.value);
+  await loadData(pageNumber.value, rows.value);
 });
 </script>
 
@@ -61,5 +86,11 @@ onMounted(async () => {
     <Column field="name" header="name" />
     <Column field="email" header="email" />
     <Column field="level" header="level" />
+    <Column header="Delete">
+      <template #body="slotProps">
+        <Button icon="pi pi-trash" color="red" @click="(event) => confirmDelete(event, slotProps.index)" severity="danger" />
+        <ConfirmPopup />
+      </template>
+    </Column>
   </DataTable>
 </template>

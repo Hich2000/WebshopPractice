@@ -12,6 +12,14 @@ export interface PassWordError {
   description: string
 }
 
+export interface UserRegistrationData {
+  name: string,
+  email: string,
+  password: string,
+  error: PassWordError[] | null,
+  success: string | null
+}
+
 function isPasswordErrorArray(data: unknown): data is PassWordError[] {
   return Array.isArray(data) &&
     data.every(
@@ -79,7 +87,7 @@ async function login(email: string, password: string): Promise<boolean> {
   return true
 }
 
-async function register(name: string, email: string, password: string): Promise<true | PassWordError[]> {
+async function registerCustomer(name: string, email: string, password: string): Promise<true | PassWordError[]> {
   const response = await fetch("/register/user", {
     method: "POST",
     credentials: "include",
@@ -93,7 +101,28 @@ async function register(name: string, email: string, password: string): Promise<
     })
   });
 
-  if (response.status == 409) {
+  return processRegisterResponse(response);
+}
+
+async function registerAdmin(name: string, email: string, password: string): Promise<true | PassWordError[]> {
+  const response = await fetch("/register/admin", {
+    method: "POST",
+    credentials: "include",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: name,
+      email: email,
+      password: password
+    })
+  });
+
+  return processRegisterResponse(response);
+}
+
+async function processRegisterResponse(response: Response): Promise<true | PassWordError[]> {
+  if (!response.ok) {
     const responseErrors = await response.json();
     if (isPasswordErrorArray(responseErrors)) {
       const passwordErrors = responseErrors;
@@ -133,7 +162,7 @@ async function updateInfo(id: string, name: string, email: string): Promise<bool
 }
 
 async function changeMyPassword(oldPassword: string, newPassword: string, verifyNewPassword: string)
-: Promise<true | PassWordError[]> {
+  : Promise<true | PassWordError[]> {
 
   const response = await fetch('/register/changeOwnPassword', {
     method: "PATCH",
@@ -166,14 +195,30 @@ async function changeMyPassword(oldPassword: string, newPassword: string, verify
   return true;
 }
 
+async function deleteUser(id: string): Promise<boolean> {
+
+  const response = await fetch(`/shopUser/${id}`, {
+    credentials: "include",
+    method: "DELETE"
+  });
+
+  if (!response.ok) {
+    return false;
+  }
+
+  return true;
+}
+
 export function useUser() {
   return {
     currentUser: readonly(currentUser),
     fetchCurrentUser,
     logout,
     login,
-    register,
+    registerCustomer,
+    registerAdmin,
     updateInfo,
-    changeMyPassword
+    changeMyPassword,
+    deleteUser
   }
 }

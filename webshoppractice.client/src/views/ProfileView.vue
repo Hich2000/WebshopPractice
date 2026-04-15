@@ -1,12 +1,5 @@
-<script lang="ts">
+<script setup lang="ts">
 import ProfileLinks from '@/components/profileComponents/ProfileLinks.vue';
-import { defineComponent } from 'vue';
-
-export default defineComponent({
-  components: {
-    ProfileLinks
-  }
-})
 </script>
 
 <template>

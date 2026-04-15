@@ -1,50 +1,60 @@
 import type { MenuItem } from "primevue/menuitem";
 import { useUser } from '@/composables/user'
 import { router } from '@/main';
-import { ref, type Ref } from "vue";
+import { ref } from "vue";
 
 const { currentUser, logout } = useUser()
 
 export interface NavItemList {
-  mainMenuItems: readonly MenuItem[],
-  userMenuItems: readonly MenuItem[]
+  mainMenuItems: MenuItem[],
+  userMenuItems: MenuItem[]
 }
 
-//start with empty list and construct it as we go along.
-const mainMenuItems: MenuItem[] = [];
-const userMenuItems: MenuItem[] = [
-  {
-    label: "Profile",
-    command: () => router.push('/Profile')
-  },
-  {
-    label: "Logout",
-    command: async () => {
-      await logout()
-      router.push('/')
+const navItemList = ref<NavItemList>({
+  mainMenuItems: [],
+  userMenuItems: []
+})
+
+async function buildNavList(): Promise<NavItemList> {
+  //start with empty list and construct it as we go along.
+  const mainMenuItems: MenuItem[] = [];
+  const userMenuItems: MenuItem[] = [
+    {
+      label: "Profile",
+      command: () => router.push('/Profile')
+    },
+    {
+      label: "Logout",
+      command: async () => {
+        await logout()
+        router.push('/')
+      }
     }
+  ];
+
+  //customer specific items
+  const customerMenuItems: MenuItem[] = [];
+  customerMenuItems.push({ label: "Home", command: () => router.push('/') });
+  mainMenuItems.push(...customerMenuItems)
+
+  //admin specific items
+  if (currentUser.value?.level === "Admin") {
+    const adminMenuItems: MenuItem[] = [];
+    adminMenuItems.push({ label: "Admin Panel", command: () => router.push("/Admin") });
+    mainMenuItems.push(...adminMenuItems);
   }
-];
 
-//customer specific items
-const customerMenuItems: MenuItem[] = [];
-customerMenuItems.push({ label: "Home", command: () => router.push('/') });
-mainMenuItems.push(...customerMenuItems)
+  navItemList.value = {
+    mainMenuItems: mainMenuItems,
+    userMenuItems: userMenuItems
+  }
 
-//admin specific items
-if (currentUser.value?.level === "Admin") {
-  const adminMenuItems: MenuItem[] = [];
-  adminMenuItems.push({ label: "Admin Panel", command: () => router.push("/Placeholder") });
-  mainMenuItems.push(...adminMenuItems);
+  return navItemList.value;
 }
-
-const navItemList: Ref<NavItemList> = ref<NavItemList>({
-  mainMenuItems: mainMenuItems,
-  userMenuItems: userMenuItems
-});
 
 export function useNavItems() {
   return {
-    navItemList: navItemList
+    navItemList: navItemList,
+    buildNavList
   }
 }

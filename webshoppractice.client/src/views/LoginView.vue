@@ -1,14 +1,9 @@
-<script lang="ts">
-import { defineComponent } from 'vue';
+<script setup lang="ts">
 import LoginForm from '@/components/loginComponents/LoginForm.vue';
 import RegisterForm from '@/components/loginComponents/RegisterForm.vue';
+import { useUser } from '@/composables/user';
 
-export default defineComponent({
-  components: {
-    LoginForm,
-    RegisterForm
-  }
-})
+const { registerCustomer } = useUser();
 </script>
 
 <template>
@@ -17,7 +12,7 @@ export default defineComponent({
       <LoginForm />
     </div>
     <div>
-      <RegisterForm />
+      <RegisterForm :register="registerCustomer" intro-text="Don't have an account yet? Register now."/>
     </div>
   </div>
 </template>

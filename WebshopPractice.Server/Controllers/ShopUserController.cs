@@ -108,21 +108,28 @@ public class ShopUserController(
     }
 
     [HttpDelete("{id}")]
-    [Authorize(Policy = "Admin")]
+    [Authorize]
+    [Route("deleteAccount")]
     public async Task<IActionResult> Delete(string id)
     {
+        //if the currently logged in user is not an admin then they cannot update anyone excepts themselves
+        bool isAdmin = User.Claims.FirstOrDefault(c => c.Type == "UserLevel")?.Value == UserLevel.Admin.ToString();
+        ShopUser? currentUser = await _userManager.GetUserAsync(User);
+        if (!isAdmin && currentUser?.Id != id)
+        {
+            return BadRequest("You are not authorized to perform this action.");
+        }
+
+        ShopUser? userToDelete = await _userManager.FindByIdAsync(id);
+        if (userToDelete == null)
+        {
+            return Ok();
+        }
+
         try
         {
-            var rowsAffected = await _db.ShopUsers
-                .Where(u => u.Id == id)
-                .ExecuteDeleteAsync();
-
-            if (rowsAffected == 0)
-            {
-                return NotFound();
-            }
-
-            return NoContent();
+            await _userManager.DeleteAsync(userToDelete);
+            return Ok();
         }
         catch (Exception)
         {

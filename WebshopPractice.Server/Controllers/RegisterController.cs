@@ -65,7 +65,8 @@ public class RegisterController(
         if (result.Succeeded)
         {
             return Ok();
-        } else
+        }
+        else
         {
             return Conflict(result.Errors);
         }

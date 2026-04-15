@@ -162,7 +162,7 @@ async function updateInfo(id: string, name: string, email: string): Promise<bool
 }
 
 async function changeMyPassword(oldPassword: string, newPassword: string, verifyNewPassword: string)
-: Promise<true | PassWordError[]> {
+  : Promise<true | PassWordError[]> {
 
   const response = await fetch('/register/changeOwnPassword', {
     method: "PATCH",
@@ -195,6 +195,20 @@ async function changeMyPassword(oldPassword: string, newPassword: string, verify
   return true;
 }
 
+async function deleteUser(id: string): Promise<boolean> {
+
+  const response = await fetch(`/shopUser/${id}`, {
+    credentials: "include",
+    method: "DELETE"
+  });
+
+  if (!response.ok) {
+    return false;
+  }
+
+  return true;
+}
+
 export function useUser() {
   return {
     currentUser: readonly(currentUser),
@@ -204,6 +218,7 @@ export function useUser() {
     registerCustomer,
     registerAdmin,
     updateInfo,
-    changeMyPassword
+    changeMyPassword,
+    deleteUser
   }
 }

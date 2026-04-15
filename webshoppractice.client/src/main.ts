@@ -27,12 +27,15 @@ import NoAccessView from './views/NoAccessView.vue'
 import PlaceHolderView from './views/PlaceHolderView.vue'
 import UsersTable from './components/adminComponents/userManagementComponents/UsersTable.vue'
 import AdminUserForm from './components/adminComponents/userManagementComponents/AdminUserForm.vue'
+import DeleteMyAccount from './components/profileComponents/DeleteMyAccount.vue'
+import AccountDeleted from './components/profileComponents/AccountDeleted.vue'
 
 const routes = [
   { path: '/', component: ProductPage },
   { path: '/NoAccess', component: NoAccessView },
   { path: '/Placeholder', component: PlaceHolderView },
   { path: '/Login', component: LoginView },
+  { path: '/AccountDeleted', component: AccountDeleted },
   {
     path: '/Profile',
     component: ProfileView,
@@ -47,7 +50,12 @@ const routes = [
         path: 'Password',
         meta: { requiresAuth: true },
         component: ChangeMyPassword
-      }
+      },
+      {
+        path: 'DeleteAccount',
+        meta: { requiresAuth: true },
+        component: DeleteMyAccount
+      },
     ]
   },
   {

@@ -13,6 +13,11 @@ const menuItems: MenuItem[] = [
     label: 'Change password',
     icon: 'pi pi-hashtag',
     command: () => router.push('/Profile/Password')
+  },
+  {
+    label: 'Delete account',
+    icon: 'pi pi-trash',
+    command: () => router.push('/Profile/DeleteAccount')
   }
 ]
 </script>

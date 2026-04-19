@@ -5,7 +5,7 @@ namespace WebshopPractice.Server.Data.Models;
 public class ShoppingCart
 {
     [Key]
-    public int Id { get; set; }
+    public string Id { get; set; }
     public IEnumerable<Product>? Products { get; set; }
 
     //user coupling

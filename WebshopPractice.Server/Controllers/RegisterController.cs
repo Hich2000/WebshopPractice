@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using WebshopPractice.Server.Data.Context;
 using WebshopPractice.Server.Data.Models;
 
 namespace WebshopPractice.Server.Controllers;
@@ -9,10 +11,12 @@ namespace WebshopPractice.Server.Controllers;
 [ApiController]
 [Route("[controller]")]
 public class RegisterController(
-    UserManager<ShopUser> usermanager
+    UserManager<ShopUser> usermanager,
+    WebshopDbContext db
 ) : Controller
 {
     private readonly UserManager<ShopUser> _userManager = usermanager;
+    private readonly WebshopDbContext _db = db;
 
     [HttpPost]
     [Route("user")]
@@ -45,6 +49,53 @@ public class RegisterController(
         }
 
         return Ok();
+    }
+
+    [HttpPost]
+    [Route("seller")]
+    public async Task<IActionResult> RegisterSeller([FromBody] RegisterSellerRequestBody body)
+    {
+        if (!ModelState.IsValid) return BadRequest(ModelState);
+
+        ShopUser? user = await _userManager.FindByIdAsync(body.UserId.ToString());
+        if (user == null)
+        {
+            return BadRequest("Could not find user to register for this seller.");
+        }
+
+        Guid newSellerId = Guid.NewGuid();
+        SellerInfo newSeller = new SellerInfo
+        {
+            Id = newSellerId,
+            OrganizationName = body.OrganizationName,
+            Country = body.Country,
+            City = body.City,
+            PostalCode = body.PostalCode,
+            Address = body.Address,
+            Users = [user]
+        };
+
+        await _db.SellerInfo.AddAsync(newSeller);
+
+        user.SellerInfo = newSeller;
+        user.SellerInfoId = newSellerId;
+
+        try
+        {
+            var result = await _db.SaveChangesAsync();
+            if (result > 0)
+            {
+                return Ok();
+            }
+            else
+            {
+                return StatusCode(500, "Failed to register Seller.");
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, ex.Message);
+        }
     }
 
     [HttpPatch]
@@ -102,6 +153,16 @@ public class RegisterController(
         public required string Name { get; set; }
         public required string Email { get; set; }
         public required string Password { get; set; }
+    }
+
+    public class RegisterSellerRequestBody
+    {
+        public required Guid UserId { get; set; }
+        public required string OrganizationName { get; set; }
+        public required string Country { get; set; }
+        public required string City { get; set; }
+        public required string PostalCode { get; set; }
+        public required string Address { get; set; }
     }
 
     public class ChangePasswordRequestBody

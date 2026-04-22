@@ -10,6 +10,7 @@ public class WebshopDbContext(DbContextOptions<WebshopDbContext> options)
 {
     public DbSet<Product> Products { get; set; }
     public DbSet<ShopUser> ShopUsers { get; set; }
+    public DbSet<SellerInfo> SellerInfo { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -24,5 +25,10 @@ public class WebshopDbContext(DbContextOptions<WebshopDbContext> options)
         builder.Entity<ShopUser>()
             .Property(u => u.Email)
             .IsRequired();
+
+        //set created at default value
+        builder.Entity<SellerInfo>()
+            .Property(s => s.CreatedAt)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
     }
 }

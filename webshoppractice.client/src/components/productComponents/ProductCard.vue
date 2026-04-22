@@ -1,6 +1,6 @@
 <script setup lang="ts">
 defineProps({
-  id: Number,
+  id: String,
   name: String,
   price: Number
 })

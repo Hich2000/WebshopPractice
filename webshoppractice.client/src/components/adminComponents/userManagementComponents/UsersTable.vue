@@ -10,11 +10,11 @@ const { deleteUser } = useUser();
 //datatable state
 const items = ref<User[]>([]);
 const totalRecordCount: Ref<number> = ref(0);
-const loading = ref(true);
-const pageNumber = ref(1);
+const loading = ref<boolean>(true);
+const pageNumber = ref<number>(1);
 
 //amount of rows shown per page
-const rows = ref(10);
+const rows = ref<number>(10);
 
 async function loadData(pageNumber: number, pageSize: number) {
   loading.value = true;

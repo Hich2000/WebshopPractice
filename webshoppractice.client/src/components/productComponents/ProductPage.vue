@@ -2,12 +2,7 @@
 import { ref, onMounted } from 'vue'
 import ProductCard from '@/components/productComponents/ProductCard.vue'
 import { DataView } from 'primevue'
-
-type Product = {
-  productId: string
-  name: string
-  price: number
-}
+import type { Product } from '@/composables/product';
 
 //datatable state
 const items = ref<Product[]>([]);
@@ -66,8 +61,7 @@ onMounted(async () => {
         :loading="loading" @page="onPageChange">
         <template #list="slotProps">
           <div class="products-grid">
-            <ProductCard v-for="(item, index) in slotProps.items" :key="index" :id="item.productId" :name="item.name"
-              :price="item.price" />
+            <ProductCard v-for="(item, index) in slotProps.items" :key="index" :product="item" />
           </div>
         </template>
       </DataView>

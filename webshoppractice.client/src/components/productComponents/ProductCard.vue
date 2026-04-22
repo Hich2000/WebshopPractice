@@ -1,17 +1,15 @@
 <script setup lang="ts">
-defineProps({
-  id: String,
-  name: String,
-  price: Number
-})
+import { type Product } from '@/composables/product';
+
+defineProps<{ product: Product }>()
 </script>
 
 <template>
   <div class="product-card">
     <img src="@/assets/logo.svg" />
-    <h2 class="product-name">{{ name }}</h2>
-    <p class="product-id">ID: {{ id }}</p>
-    <p class="product-price">€{{ price?.toFixed(2) }}</p>
+    <h2 class="product-name">{{ product.name }}</h2>
+    <p class="product-id">ID: {{ product.productId }}</p>
+    <p class="product-price">€{{ product.price?.toFixed(2) }}</p>
     <p class="product-description clamp">
       Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore
     </p>

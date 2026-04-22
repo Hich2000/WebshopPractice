@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 using WebshopPractice.Server.Data.Models;
 
 namespace WebshopPractice.Server.Data.Context;
@@ -30,5 +31,12 @@ public class WebshopDbContext(DbContextOptions<WebshopDbContext> options)
         builder.Entity<SellerInfo>()
             .Property(s => s.CreatedAt)
             .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        //fixing on delete behaviour for seller info
+        builder.Entity<ShopUser>()
+            .HasOne(u => u.SellerInfo)
+            .WithMany(s => s.Users)
+            .HasForeignKey(u => u.SellerInfoId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

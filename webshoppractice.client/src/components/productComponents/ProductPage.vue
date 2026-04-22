@@ -1,36 +1,50 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, onMounted } from 'vue'
 import ProductCard from '@/components/productComponents/ProductCard.vue'
+import { DataView } from 'primevue'
+import type { Product } from '@/composables/product';
 
-type Products = {
-  id: number
-  name: string
-  price: number
-}[]
+//datatable state
+const items = ref<Product[]>([]);
+const totalRecordCount = ref<number>(0);
+const loading = ref<boolean>(true);
+const pageNumber = ref<number>(1);
 
-const route = useRoute()
+//amount of rows shown per page
+const rows = ref<number>(10);
 
-const loading = ref<boolean>(false)
-const post = ref<Products | null>(null)
 
-async function fetchData() {
-  post.value = null
+async function loadData(pageNumber: number, pageSize: number) {
   loading.value = true
 
-  const response = await fetch('product')
+  const response = await fetch(`/product/Paged?pageNumber=${pageNumber}&pageSize=${pageSize}`)
   if (response.ok) {
-    post.value = await response.json()
-    loading.value = false
+    const json = await response.json()
+
+    totalRecordCount.value = json.totalRecordCount;
+    rows.value = json.pageSize
+
+    items.value = [];
+    json.body.forEach((element: { id: string; name: string; price: number }) => {
+      items.value.push({
+        productId: element.id,
+        name: element.name,
+        price: element.price
+      })
+    });
   }
+
+  loading.value = false
 }
 
-onMounted(fetchData)
+async function onPageChange(event: { page: number; rows: number; }) {
+  pageNumber.value = event.page + 1;
+  await loadData(event.page + 1, event.rows);
+}
 
-watch(
-  () => route.fullPath,
-  fetchData
-)
+onMounted(async () => {
+  await loadData(pageNumber.value, rows.value);
+});
 </script>
 
 <template>
@@ -41,11 +55,16 @@ watch(
       Fetching products...
     </div>
 
-    <div v-else-if="post">
-      <div class="products-grid">
-        <ProductCard v-for="product in post" :key="product.id" :id="product.id" :name="product.name"
-          :price="product.price" />
-      </div>
+    <div v-else>
+
+      <DataView :value="items" :lazy="true" :paginator="true" :rows="rows" :totalRecords="totalRecordCount"
+        :loading="loading" @page="onPageChange">
+        <template #list="slotProps">
+          <div class="products-grid">
+            <ProductCard v-for="(item, index) in slotProps.items" :key="index" :product="item" />
+          </div>
+        </template>
+      </DataView>
     </div>
   </div>
 </template>

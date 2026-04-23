@@ -69,7 +69,7 @@ public class RegisterController(
         {
             return BadRequest("Could not find user to register for this seller.");
         }
-        if (user.SellerId !== null)
+        if (user.SellerId != null)
         {
             return BadRequest("Cannot link user to this seller.");
         }

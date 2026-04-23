@@ -1,5 +1,5 @@
 import { ref, readonly } from "vue";
-import type { PassWordError } from "./registrationData";
+import type { RegistrationError } from "./registrationData";
 
 export interface User {
   id: string,
@@ -8,7 +8,7 @@ export interface User {
   level: string
 }
 
-function isPasswordErrorArray(data: unknown): data is PassWordError[] {
+function isRegistrationsErrorArray(data: unknown): data is RegistrationError[] {
   return Array.isArray(data) &&
     data.every(
       (item) =>
@@ -75,7 +75,7 @@ async function login(email: string, password: string): Promise<boolean> {
   return true
 }
 
-async function registerCustomer(name: string, email: string, password: string): Promise<true | PassWordError[]> {
+async function registerCustomer(name: string, email: string, password: string): Promise<true | RegistrationError[]> {
   const response = await fetch("/register/user", {
     method: "POST",
     credentials: "include",
@@ -92,7 +92,7 @@ async function registerCustomer(name: string, email: string, password: string): 
   return processRegisterResponse(response);
 }
 
-async function registerAdmin(name: string, email: string, password: string): Promise<true | PassWordError[]> {
+async function registerAdmin(name: string, email: string, password: string): Promise<true | RegistrationError[]> {
   const response = await fetch("/register/admin", {
     method: "POST",
     credentials: "include",
@@ -109,12 +109,12 @@ async function registerAdmin(name: string, email: string, password: string): Pro
   return processRegisterResponse(response);
 }
 
-async function processRegisterResponse(response: Response): Promise<true | PassWordError[]> {
+async function processRegisterResponse(response: Response): Promise<true | RegistrationError[]> {
   if (!response.ok) {
     const responseErrors = await response.json();
-    if (isPasswordErrorArray(responseErrors)) {
-      const passwordErrors = responseErrors;
-      return passwordErrors;
+    if (isRegistrationsErrorArray(responseErrors)) {
+      const registrationErrors = responseErrors;
+      return registrationErrors;
     } else {
       return [
         {
@@ -150,7 +150,7 @@ async function updateInfo(id: string, name: string, email: string): Promise<bool
 }
 
 async function changeMyPassword(oldPassword: string, newPassword: string, verifyNewPassword: string)
-  : Promise<true | PassWordError[]> {
+  : Promise<true | RegistrationError[]> {
 
   const response = await fetch('/register/changeOwnPassword', {
     method: "PATCH",
@@ -167,9 +167,9 @@ async function changeMyPassword(oldPassword: string, newPassword: string, verify
 
   if (response.status == 409) {
     const responseErrors = await response.json();
-    if (isPasswordErrorArray(responseErrors)) {
-      const passwordErrors = responseErrors;
-      return passwordErrors;
+    if (isRegistrationsErrorArray(responseErrors)) {
+      const registrationErrors = responseErrors;
+      return registrationErrors;
     } else {
       return [
         {

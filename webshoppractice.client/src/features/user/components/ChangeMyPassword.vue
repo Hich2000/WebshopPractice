@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useUser, type PassWordError } from '@/shared/composables/user'
+import { useUser } from '@/shared/composables/user'
 import { Button } from 'primevue'
+import type { RegistrationError } from '@/shared/composables/registrationData'
 
 const { fetchCurrentUser, changeMyPassword } = useUser()
 
@@ -9,7 +10,7 @@ const oldPassword = ref<string>('')
 const newPassword = ref<string>('')
 const verifyPassword = ref<string>('')
 
-const error = ref<PassWordError[] | null>(null)
+const error = ref<RegistrationError[] | null>(null)
 const success = ref<string | null>(null)
 
 onMounted(async () => {

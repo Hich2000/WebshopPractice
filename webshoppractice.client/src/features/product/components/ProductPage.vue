@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import ProductCard from '@/components/productComponents/ProductCard.vue'
+import ProductCard from '@/features/product/components/ProductCard.vue'
 import { DataView } from 'primevue'
-import type { Product } from '@/shared/composables/product';
+import type { Product } from '@/features/product/composables/product';
 
 //datatable state
 const items = ref<Product[]>([]);

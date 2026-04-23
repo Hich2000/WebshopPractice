@@ -20,7 +20,7 @@ app.use(ConfirmationService);
 //navigation
 import { createRouter, createWebHistory } from 'vue-router'
 import LoginView from './features/user/views/LoginView.vue'
-import ProductPage from './components/productComponents/ProductPage.vue'
+import HomeView from './shared/views/HomeView.vue'
 import ProfileView from './features/user/views/ProfileView.vue'
 import MyInformation from './features/user/components/MyInformation.vue'
 import ChangeMyPassword from './features/user/components/ChangeMyPassword.vue'
@@ -34,7 +34,7 @@ import DeleteMyAccount from './features/user/components/DeleteMyAccount.vue'
 import AccountDeleted from './features/user/components/AccountDeleted.vue'
 
 const routes = [
-  { path: '/', component: ProductPage },
+  { path: '/', component: HomeView },
   { path: '/NoAccess', component: NoAccessView },
   { path: '/Placeholder', component: PlaceHolderView },
   { path: '/Login', component: LoginView },

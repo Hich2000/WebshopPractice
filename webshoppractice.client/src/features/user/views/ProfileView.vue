@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import ProfileLinks from '@/components/profileComponents/ProfileLinks.vue';
+import ProfileLinks from '@/features/user/components/ProfileLinks.vue';
 </script>
 
 <template>

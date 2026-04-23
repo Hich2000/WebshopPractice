@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import RegisterForm from '@/features/login/components/RegisterForm.vue';
+import RegisterForm from '@/features/user/components/RegisterForm.vue';
 import { useUser } from '@/composables/user';
 
 const { registerAdmin } = useUser();

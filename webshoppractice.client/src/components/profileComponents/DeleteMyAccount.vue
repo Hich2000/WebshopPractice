@@ -31,7 +31,7 @@ async function deleteAccount() {
     <p>
       <label>
         <Checkbox v-model="checkboxChecked" binary />
-        I understand that by performing this function my data will be deleted and cannot be recovered.
+        I understand that by performing this action my data will be deleted and cannot be recovered.
       </label>
     </p>
     <br>

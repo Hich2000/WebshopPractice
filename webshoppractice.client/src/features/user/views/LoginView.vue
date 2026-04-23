@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import RegisterForm from '@/features/login/components/RegisterForm.vue';
+import RegisterForm from '@/features/user/components/RegisterForm.vue';
 import { useUser } from '@/composables/user';
-import SigninForm from '@/features/login/components/SigninForm.vue';
+import SigninForm from '@/features/user/components/SigninForm.vue';
 
 const { registerCustomer } = useUser();
 </script>

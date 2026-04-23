@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import LoginForm from '@/components/loginComponents/LoginForm.vue';
-import RegisterForm from '@/components/loginComponents/RegisterForm.vue';
+import RegisterForm from '@/features/login/components/RegisterForm.vue';
 import { useUser } from '@/composables/user';
+import SigninForm from '@/features/login/components/SigninForm.vue';
 
 const { registerCustomer } = useUser();
 </script>
@@ -9,7 +9,7 @@ const { registerCustomer } = useUser();
 <template>
   <div class="login-grid">
     <div>
-      <LoginForm />
+      <SigninForm />
     </div>
     <div>
       <RegisterForm :register="registerCustomer" intro-text="Don't have an account yet? Register now."/>

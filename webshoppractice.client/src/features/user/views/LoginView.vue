@@ -2,8 +2,42 @@
 import RegisterForm from '@/features/user/components/RegisterForm.vue';
 import { useUser } from '@/shared/composables/user';
 import LoginForm from '@/features/user/components/LoginForm.vue';
+import { reactive } from 'vue';
+import { type UserRegistrationData } from '@/shared/composables/registrationData';
+import { Button } from 'primevue';
 
 const { registerCustomer } = useUser();
+
+//todo create a seller registration setup
+const userForm = reactive<
+  UserRegistrationData
+>({
+    name: '',
+    email: '',
+    password: '',
+    error: null,
+    success: null
+})
+
+async function onSubmit() {
+
+  //first the user account
+  userForm.success = null;
+  userForm.error = null;
+
+  const userAccountResponse = await registerCustomer(
+    userForm.name,
+    userForm.email,
+    userForm.password,
+  );
+
+  if (userAccountResponse === true) {
+    userForm.success = "Account successfully registered";
+  } else {
+    userForm.error = userAccountResponse;
+  }
+}
+
 </script>
 
 <template>
@@ -11,8 +45,17 @@ const { registerCustomer } = useUser();
     <div>
       <LoginForm />
     </div>
-    <div>
-      <RegisterForm :register="registerCustomer" intro-text="Don't have an account yet? Register now."/>
+    <div class="form-div">
+      <form @submit.prevent="onSubmit">
+        <h1>Register</h1>
+        <p class="form-error" style="color: black !important;">
+          Don't have an account yet? Register now.
+        </p>
+
+        <RegisterForm v-model="userForm" />
+        <br>
+        <Button type="submit" label="Register" />
+      </form>
     </div>
   </div>
 </template>

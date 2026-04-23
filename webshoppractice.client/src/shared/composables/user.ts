@@ -1,23 +1,11 @@
 import { ref, readonly } from "vue";
+import type { PassWordError } from "./registrationData";
 
 export interface User {
   id: string,
   name: string,
   email: string,
   level: string
-}
-
-export interface PassWordError {
-  code: string,
-  description: string
-}
-
-export interface UserRegistrationData {
-  name: string,
-  email: string,
-  password: string,
-  error: PassWordError[] | null,
-  success: string | null
 }
 
 function isPasswordErrorArray(data: unknown): data is PassWordError[] {

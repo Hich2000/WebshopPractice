@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Button, Column, DataTable } from 'primevue';
 import { onMounted, ref, type Ref } from 'vue';
-import { useUser, type User } from '@/composables/user';
+import { useUser, type User } from '@/shared/composables/user';
 import { useConfirm } from 'primevue/useconfirm'
 import { ConfirmPopup } from 'primevue';
 

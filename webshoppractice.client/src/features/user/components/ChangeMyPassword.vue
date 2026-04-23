@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useUser, type PassWordError } from '@/composables/user'
+import { useUser, type PassWordError } from '@/shared/composables/user'
 import { Button } from 'primevue'
 
 const { fetchCurrentUser, changeMyPassword } = useUser()

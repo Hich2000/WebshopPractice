@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { router } from '@/main'
 import { useRoute } from 'vue-router'
-import { useUser } from '@/composables/user'
+import { useUser } from '@/shared/composables/user'
 import { Button } from 'primevue'
 
 const { fetchCurrentUser, login } = useUser()

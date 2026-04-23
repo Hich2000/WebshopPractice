@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useUser } from '@/composables/user'
+import { useUser } from '@/shared/composables/user'
 import { Button } from 'primevue'
 
 const { currentUser, fetchCurrentUser, updateInfo } = useUser()

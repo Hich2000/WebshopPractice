@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useUser } from '@/composables/user';
+import { useUser } from '@/shared/composables/user';
 import { router } from '@/main';
 import { Button, Checkbox } from 'primevue';
 import { ref } from 'vue';

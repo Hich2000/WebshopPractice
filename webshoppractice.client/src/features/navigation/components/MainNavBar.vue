@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, watch, onMounted, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUser } from '@/composables/user'
-import { useNavItems } from '@/composables/mainMenuItems'
+import { useUser } from '@/shared/composables/user'
+import { useNavItems } from '@/features/navigation/composables/mainMenuItems'
 import { Button, Menu, Menubar } from 'primevue'
 
 const router = useRouter()

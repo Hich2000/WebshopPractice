@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import type { UserRegistrationData, PassWordError } from '@/composables/user';
+import type { UserRegistrationData, PassWordError } from '@/shared/composables/user';
 import { Button } from 'primevue';
 
 const props = defineProps<{

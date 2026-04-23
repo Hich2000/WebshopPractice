@@ -1,5 +1,5 @@
 import type { MenuItem } from "primevue/menuitem";
-import { useUser } from '@/composables/user'
+import { useUser } from '@/shared/composables/user'
 import { router } from '@/main';
 import { ref } from "vue";
 

@@ -88,7 +88,7 @@ export const router = createRouter({
 })
 
 //setup guard logic
-import { useUser } from '@/composables/user';
+import { useUser } from '@/shared/composables/user';
 const { fetchCurrentUser } = useUser()
 router.beforeEach(async (to, _from, next) => {
   if (to.matched.length < 1) {

@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import ProductPage from '@/features/product/components/ProductPage.vue';
-
+import ProductList from '@/features/product/components/ProductList.vue';
 </script>
 
 <template>
-  <ProductPage />
+  <ProductList />
 </template>

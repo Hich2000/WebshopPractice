@@ -39,6 +39,7 @@ public class SellerController(
             {
                 Id = seller.Id,
                 OrganizationName = seller.OrganizationName,
+                CommerceNumber = seller.CommerceNumber,
                 Country = seller.Country,
                 City = seller.City,
                 PostalCode = seller.PostalCode,
@@ -72,6 +73,7 @@ public class SellerController(
         {
             Id = seller.Id,
             OrganizationName = seller.OrganizationName,
+            CommerceNumber = seller.CommerceNumber,
             Country = seller.Country,
             City = seller.City,
             PostalCode = seller.PostalCode,

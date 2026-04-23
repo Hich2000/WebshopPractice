@@ -10,6 +10,7 @@ public class Seller
     public ICollection<ShopUser> Users { get; set; } = [];
 
     public required string OrganizationName { get; set; }
+    public required string CommerceNumber { get; set; }
 
     public required string Country { get; set; }
     public required string City { get; set; }

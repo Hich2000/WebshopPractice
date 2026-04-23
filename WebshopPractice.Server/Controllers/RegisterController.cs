@@ -68,6 +68,7 @@ public class RegisterController(
         {
             Id = newSellerId,
             OrganizationName = body.OrganizationName,
+            CommerceNumber = body.CommerceNumber,
             Country = body.Country,
             City = body.City,
             PostalCode = body.PostalCode,
@@ -160,6 +161,7 @@ public class RegisterController(
     {
         public required Guid UserId { get; set; }
         public required string OrganizationName { get; set; }
+        public required string CommerceNumber { get; set; }
         public required string Country { get; set; }
         public required string City { get; set; }
         public required string PostalCode { get; set; }

@@ -141,8 +141,16 @@ public class SellerController(
 
         try
         {
+            await _db.ShopUsers
+                .Where(user => user.SellerInfoId == id)
+                .ExecuteUpdateAsync( user => user
+                    .SetProperty(prop => prop.SellerInfoId,  prop => null)
+                    .SetProperty(prop => prop.SellerInfoId,  prop => null)
+                    .SetProperty(prop => prop.UserLevel, prop => UserLevel.Customer)
+                );
+
             await _db.SellerInfo
-                .Where(s => s.Id == id)
+                .Where(seller => seller.Id == id)
                 .ExecuteDeleteAsync();
             return Ok();
         }

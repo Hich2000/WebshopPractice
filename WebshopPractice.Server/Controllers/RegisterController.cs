@@ -79,6 +79,7 @@ public class RegisterController(
 
         user.SellerInfo = newSeller;
         user.SellerInfoId = newSellerId;
+        user.UserLevel = UserLevel.Seller;
 
         try
         {

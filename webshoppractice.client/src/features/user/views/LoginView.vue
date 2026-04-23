@@ -2,16 +2,17 @@
 import RegisterForm from '@/features/user/components/RegisterForm.vue';
 import { useUser } from '@/shared/composables/user';
 import LoginForm from '@/features/user/components/LoginForm.vue';
-import { reactive } from 'vue';
-import { type UserRegistrationData } from '@/shared/composables/registrationData';
-import { Button } from 'primevue';
+import { reactive, ref, type Ref } from 'vue';
+import { type SellerRegistrationData, type UserRegistrationData } from '@/shared/composables/registrationData';
+import { Button, Checkbox } from 'primevue';
+import RegisterSellerForm from '@/features/seller/components/RegisterSellerForm.vue';
 
 const { registerCustomer } = useUser();
+const isSeller = ref<boolean>(false);
+const userCreationSuccess: Ref<boolean|null> = ref(null);
 
 //todo create a seller registration setup
-const userForm = reactive<
-  UserRegistrationData
->({
+const userForm = reactive<UserRegistrationData>({
     name: '',
     email: '',
     password: '',
@@ -19,8 +20,18 @@ const userForm = reactive<
     success: null
 })
 
-async function onSubmit() {
+const sellerForm = reactive<SellerRegistrationData>({
+  organizationName: '',
+  commerceNumber: '',
+  country: '',
+  city: '',
+  postalCode: '',
+  address: '',
+  error: null,
+  success: null
+})
 
+async function onSubmit() {
   //first the user account
   userForm.success = null;
   userForm.error = null;
@@ -33,8 +44,15 @@ async function onSubmit() {
 
   if (userAccountResponse === true) {
     userForm.success = "Account successfully registered";
+    userCreationSuccess.value = true;
   } else {
     userForm.error = userAccountResponse;
+    userCreationSuccess.value = false;
+  }
+
+  //then the seller information
+  if (isSeller.value && userCreationSuccess.value) {
+    console.log("I am here");
   }
 }
 
@@ -53,6 +71,22 @@ async function onSubmit() {
         </p>
 
         <RegisterForm v-model="userForm" />
+
+        <p style="text-align: start;">
+          <br>
+          <label>
+            <Checkbox v-model="isSeller" binary />
+            I am a seller.
+          </label>
+        </p>
+
+        <div v-if="isSeller">
+          <p style="color: blue;">
+            If you already have an account, you can register as a seller from your profile page.
+          </p>
+          <RegisterSellerForm  v-model="sellerForm" />
+        </div>
+
         <br>
         <Button type="submit" label="Register" />
       </form>

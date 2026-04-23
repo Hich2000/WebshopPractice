@@ -36,11 +36,6 @@ const model = defineModel<SellerRegistrationData>({ required: true });
     <input id="postalCode" v-model="model.postalCode" class="form-input" type="text" placeholder="Postal code" autocomplete="off" required>
   </p>
   <p>
-    <label for="city" class="form-label">City</label>
-    <input id="city" v-model="model.city" class="form-input" type="text" placeholder="city" autocomplete="off"
-      required>
-  </p>
-  <p>
     <label for="address" class="form-label">Address</label>
     <input id="address" v-model="model.address" class="form-input" type="text" placeholder="address" autocomplete="off" required>
   </p>

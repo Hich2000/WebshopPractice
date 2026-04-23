@@ -2,7 +2,7 @@
 
 namespace WebshopPractice.Server.Data.Models;
 
-public class SellerInfo
+public class Seller
 {
     [Key]
     public Guid Id { get; set; }

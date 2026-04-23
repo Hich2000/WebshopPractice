@@ -30,7 +30,7 @@ public class SellerController(
         if (!_allowedPageLength.Contains(pageSize)) pageSize = _smallestPageLength;
         if (pageNumber < 1) pageNumber = 1;
 
-        List<SellerDTO> sellerSlice = await _db.SellerInfo
+        List<SellerDTO> sellerSlice = await _db.Seller
             .AsNoTracking()
             .OrderBy(seller => seller.OrganizationName)
             .Skip((pageNumber - 1) * pageSize)
@@ -49,7 +49,7 @@ public class SellerController(
             })
             .ToListAsync();
 
-        int totalRecordCount = await _db.SellerInfo.CountAsync();
+        int totalRecordCount = await _db.Seller.CountAsync();
         int pageCount = (int)Math.Ceiling((double)totalRecordCount / pageSize);
 
         return new PaginatedTable<SellerDTO>
@@ -66,7 +66,7 @@ public class SellerController(
     [Authorize]
     public async Task<ActionResult<ShopUserDTO>> Get(Guid id)
     {
-        var seller = await _db.SellerInfo
+        var seller = await _db.Seller
         .Where(seller => seller.Id == id)
         .Select(seller => new SellerDTO
         {
@@ -96,14 +96,14 @@ public class SellerController(
         //if the currently logged in user is not an admin then they cannot update anyone excepts themselves
         bool isAdmin = User.Claims.FirstOrDefault(c => c.Type == "UserLevel")?.Value == UserLevel.Admin.ToString();
         ShopUser? currentUser = await _userManager.GetUserAsync(User);
-        if (!isAdmin && currentUser?.SellerInfoId != id)
+        if (!isAdmin && currentUser?.SellerId != id)
         {
             return Unauthorized("You are not authorized to update this seller.");
         }
 
         try
         {
-            await _db.SellerInfo
+            await _db.Seller
             .Where(seller => seller.Id == updatedSeller.Id)
             .ExecuteUpdateAsync(seller => seller
                 .SetProperty(prop => prop.OrganizationName, prop => updatedSeller.OrganizationName)
@@ -128,12 +128,12 @@ public class SellerController(
         //if the currently logged in user is not an admin then they cannot update anyone excepts themselves
         bool isAdmin = User.Claims.FirstOrDefault(c => c.Type == "UserLevel")?.Value == UserLevel.Admin.ToString();
         ShopUser? currentUser = await _userManager.GetUserAsync(User);
-        if (!isAdmin && currentUser?.SellerInfoId != id)
+        if (!isAdmin && currentUser?.SellerId != id)
         {
             return Unauthorized("You are not authorized to perform this action.");
         }
 
-        SellerInfo? sellerToDelete = await _db.SellerInfo.FindAsync(id);
+        Seller? sellerToDelete = await _db.Seller.FindAsync(id);
         if (sellerToDelete == null)
         {
             return NotFound();
@@ -142,14 +142,14 @@ public class SellerController(
         try
         {
             await _db.ShopUsers
-                .Where(user => user.SellerInfoId == id)
+                .Where(user => user.SellerId == id)
                 .ExecuteUpdateAsync( user => user
-                    .SetProperty(prop => prop.SellerInfoId,  prop => null)
-                    .SetProperty(prop => prop.SellerInfoId,  prop => null)
+                    .SetProperty(prop => prop.SellerId,  prop => null)
+                    .SetProperty(prop => prop.SellerId,  prop => null)
                     .SetProperty(prop => prop.UserLevel, prop => UserLevel.Customer)
                 );
 
-            await _db.SellerInfo
+            await _db.Seller
                 .Where(seller => seller.Id == id)
                 .ExecuteDeleteAsync();
             return Ok();

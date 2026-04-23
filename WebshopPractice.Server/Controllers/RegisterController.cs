@@ -64,7 +64,7 @@ public class RegisterController(
         }
 
         Guid newSellerId = Guid.NewGuid();
-        SellerInfo newSeller = new SellerInfo
+        Seller newSeller = new Seller
         {
             Id = newSellerId,
             OrganizationName = body.OrganizationName,
@@ -75,10 +75,10 @@ public class RegisterController(
             Users = [user]
         };
 
-        await _db.SellerInfo.AddAsync(newSeller);
+        await _db.Seller.AddAsync(newSeller);
 
-        user.SellerInfo = newSeller;
-        user.SellerInfoId = newSellerId;
+        user.Seller = newSeller;
+        user.SellerId = newSellerId;
         user.UserLevel = UserLevel.Seller;
 
         try

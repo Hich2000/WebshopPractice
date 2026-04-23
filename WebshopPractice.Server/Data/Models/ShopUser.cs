@@ -11,8 +11,8 @@ public class ShopUser: IdentityUser
     public Guid? ShoppingCartId { get; set; }
     public ShoppingCart? ShoppingCart { get; set; }
 
-    public Guid? SellerInfoId { get; set; }
-    public SellerInfo? SellerInfo { get; set; }
+    public Guid? SellerId { get; set; }
+    public Seller? Seller { get; set; }
 }
 
 public enum UserLevel

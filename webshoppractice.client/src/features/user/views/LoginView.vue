@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import RegisterForm from '@/features/user/components/RegisterForm.vue';
-import { useUser } from '@/shared/composables/user';
 import LoginForm from '@/features/user/components/LoginForm.vue';
-import { reactive, ref, type Ref } from 'vue';
-import { type SellerRegistrationData, type UserRegistrationData } from '@/shared/composables/registrationData';
-import { Button, Checkbox } from 'primevue';
 import RegisterSellerForm from '@/features/seller/components/RegisterSellerForm.vue';
 
+
+import { reactive, ref } from 'vue';
+import { type SellerRegistrationData, type UserRegistrationData } from '@/shared/composables/registrationData';
+import { Button, Checkbox } from 'primevue';
+import { useUser } from '@/shared/composables/user';
+import { useSeller, type Seller } from '@/features/seller/composables/seller';
+
+
 const { registerCustomer } = useUser();
+const { registerSeller } = useSeller();
 const isSeller = ref<boolean>(false);
-const userCreationSuccess: Ref<boolean|null> = ref(null);
 
 //todo create a seller registration setup
 const userForm = reactive<UserRegistrationData>({
@@ -36,23 +40,42 @@ async function onSubmit() {
   userForm.success = null;
   userForm.error = null;
 
+  let newUserId: string | null = null;
+
   const userAccountResponse = await registerCustomer(
     userForm.name,
     userForm.email,
     userForm.password,
   );
 
-  if (userAccountResponse === true) {
+  if (typeof userAccountResponse === 'string') {
     userForm.success = "Account successfully registered";
-    userCreationSuccess.value = true;
+    userForm.email = '';
+    userForm.name = '';
+    userForm.password = '';
+    newUserId = userAccountResponse;
   } else {
     userForm.error = userAccountResponse;
-    userCreationSuccess.value = false;
   }
 
   //then the seller information
-  if (isSeller.value && userCreationSuccess.value) {
-    console.log("I am here");
+  if (isSeller.value && newUserId !== null) {
+    const newSeller: Seller = {
+      id: null,
+      organizationName: sellerForm.organizationName,
+      commerceNumber: sellerForm.commerceNumber,
+      country: sellerForm.country,
+      city: sellerForm.city,
+      postalCode: sellerForm.postalCode,
+      address: sellerForm.address,
+    };
+    const sellerAccountResponse = await registerSeller(newSeller, newUserId);
+
+    if (typeof sellerAccountResponse === 'string') {
+      sellerForm.success = "Seller account successfully registered";
+    } else {
+      sellerForm.error = sellerAccountResponse;
+    }
   }
 }
 
@@ -66,7 +89,7 @@ async function onSubmit() {
     <div class="form-div">
       <form @submit.prevent="onSubmit">
         <h1>Register</h1>
-        <p class="form-error" style="color: black !important;">
+        <p>
           Don't have an account yet? Register now.
         </p>
 

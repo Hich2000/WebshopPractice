@@ -1,5 +1,6 @@
 import { ref, readonly } from "vue";
 import type { RegistrationError } from "./registrationData";
+import { useRegistrationData } from "./registrationData";
 
 export interface User {
   id: string,
@@ -8,15 +9,7 @@ export interface User {
   level: string
 }
 
-function isRegistrationsErrorArray(data: unknown): data is RegistrationError[] {
-  return Array.isArray(data) &&
-    data.every(
-      (item) =>
-        typeof item.code === 'string' &&
-        typeof item.description === 'string'
-    );
-}
-
+const { processRegistrationResponse } = useRegistrationData()
 const currentUser = ref<User | null>(null)
 const initialized = ref(false)
 
@@ -75,7 +68,7 @@ async function login(email: string, password: string): Promise<boolean> {
   return true
 }
 
-async function registerCustomer(name: string, email: string, password: string): Promise<true | RegistrationError[]> {
+async function registerCustomer(name: string, email: string, password: string): Promise<string | RegistrationError[]> {
   const response = await fetch("/register/user", {
     method: "POST",
     credentials: "include",
@@ -89,10 +82,10 @@ async function registerCustomer(name: string, email: string, password: string): 
     })
   });
 
-  return processRegisterResponse(response);
+  return processRegistrationResponse(response);
 }
 
-async function registerAdmin(name: string, email: string, password: string): Promise<true | RegistrationError[]> {
+async function registerAdmin(name: string, email: string, password: string): Promise<string | RegistrationError[]> {
   const response = await fetch("/register/admin", {
     method: "POST",
     credentials: "include",
@@ -106,26 +99,7 @@ async function registerAdmin(name: string, email: string, password: string): Pro
     })
   });
 
-  return processRegisterResponse(response);
-}
-
-async function processRegisterResponse(response: Response): Promise<true | RegistrationError[]> {
-  if (!response.ok) {
-    const responseErrors = await response.json();
-    if (isRegistrationsErrorArray(responseErrors)) {
-      const registrationErrors = responseErrors;
-      return registrationErrors;
-    } else {
-      return [
-        {
-          code: "unkownError",
-          description: "An unknown error has occurred."
-        }
-      ]
-    }
-  }
-
-  return true;
+  return processRegistrationResponse(response);
 }
 
 async function updateInfo(id: string, name: string, email: string): Promise<boolean> {
@@ -150,7 +124,7 @@ async function updateInfo(id: string, name: string, email: string): Promise<bool
 }
 
 async function changeMyPassword(oldPassword: string, newPassword: string, verifyNewPassword: string)
-  : Promise<true | RegistrationError[]> {
+  : Promise<string | RegistrationError[]> {
 
   const response = await fetch('/register/changeOwnPassword', {
     method: "PATCH",
@@ -165,22 +139,7 @@ async function changeMyPassword(oldPassword: string, newPassword: string, verify
     })
   });
 
-  if (response.status == 409) {
-    const responseErrors = await response.json();
-    if (isRegistrationsErrorArray(responseErrors)) {
-      const registrationErrors = responseErrors;
-      return registrationErrors;
-    } else {
-      return [
-        {
-          code: "unkownError",
-          description: "An unknown error has occurred."
-        }
-      ]
-    }
-  }
-
-  return true;
+  return processRegistrationResponse(response);
 }
 
 async function deleteUser(id: string): Promise<boolean> {

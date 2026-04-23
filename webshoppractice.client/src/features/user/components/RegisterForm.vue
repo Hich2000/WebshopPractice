@@ -14,16 +14,16 @@ const model = defineModel<UserRegistrationData>({ required: true });
   <p>
     <label for="name" class="form-label">Name</label>
     <input id="name" v-model="model.name" class="form-input" type="text" placeholder="Full name" autocomplete="off"
-      required>
+      >
   </p>
   <p>
     <label for="email" class="form-label">E-mail</label>
     <input id="email" v-model="model.email" class="form-input" type="text" placeholder="E-mail"
-      autocomplete="new-username" required>
+      autocomplete="new-username" >
   </p>
   <p>
     <label for="password" class="form-label">Password</label>
     <input id="password" v-model="model.password" class="form-input" type="password" placeholder="Password"
-      autocomplete="new-password" required>
+      autocomplete="new-password" >
   </p>
 </template>

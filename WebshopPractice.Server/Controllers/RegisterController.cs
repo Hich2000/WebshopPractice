@@ -31,7 +31,10 @@ public class RegisterController(
             return Conflict(result.Errors);
         }
 
-        return Ok();
+        return Ok(new
+        {
+            id = result.UserId
+        });
     }
 
     [HttpPost]
@@ -48,13 +51,17 @@ public class RegisterController(
             return Conflict(result.Errors);
         }
 
-        return Ok();
+        return Ok(new
+        {
+            id = result.UserId
+        });
     }
 
     [HttpPost]
     [Route("seller")]
     public async Task<IActionResult> RegisterSeller([FromBody] RegisterSellerRequestBody body)
     {
+        Console.WriteLine(body);
         if (!ModelState.IsValid) return BadRequest(ModelState);
 
         ShopUser? user = await _userManager.FindByIdAsync(body.UserId.ToString());
@@ -87,7 +94,10 @@ public class RegisterController(
             var result = await _db.SaveChangesAsync();
             if (result > 0)
             {
-                return Ok();
+                return Ok(new
+                {
+                    id = newSellerId
+                });
             }
             else
             {
@@ -125,17 +135,25 @@ public class RegisterController(
         }
     }
 
-    private async Task<IdentityResult> CreateUser(RegisterRequestBody body, UserLevel userLevel)
+    private async Task<CreateUserResult> CreateUser(RegisterRequestBody body, UserLevel userLevel)
     {
-        //first check if email exists
+        //first check if user exists
         var userExists = await _userManager.FindByEmailAsync(body.Email);
         if (userExists != null)
         {
-            return IdentityResult.Failed(new IdentityError
+
+            return new CreateUserResult
             {
-                Code = "DuplicateEmail",
-                Description = "This email is already in use."
-            });
+                Succeeded = false,
+                Errors = new[]
+            {
+                new IdentityError
+                {
+                    Code = "DuplicateEmail",
+                    Description = "This email is already in use."
+                }
+            }
+            };
         }
 
         var newUser = new ShopUser
@@ -147,7 +165,19 @@ public class RegisterController(
         };
 
         var result = await _userManager.CreateAsync(newUser, body.Password);
-        return result;
+        return new CreateUserResult
+        {
+            Succeeded = result.Succeeded,
+            UserId = result.Succeeded ? newUser.Id : null,
+            Errors = result.Errors
+        };
+    }
+
+    public class CreateUserResult
+    {
+        public bool Succeeded { get; set; }
+        public string? UserId { get; set; }
+        public IEnumerable<IdentityError>? Errors { get; set; }
     }
 
     public class RegisterRequestBody

@@ -32,20 +32,20 @@ public class SellerController(
 
         List<SellerDTO> sellerSlice = await _db.SellerInfo
             .AsNoTracking()
-            .OrderBy(s => s.OrganizationName)
+            .OrderBy(seller => seller.OrganizationName)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
-            .Select(s => new SellerDTO
+            .Select(seller => new SellerDTO
             {
-                Id = s.Id,
-                OrganizationName = s.OrganizationName,
-                Country = s.Country,
-                City = s.City,
-                PostalCode = s.PostalCode,
-                Address = s.Address,
-                Verified = s.Verified,
-                CreatedAt = s.CreatedAt,
-                VerifiedAt = s.VerifiedAt,
+                Id = seller.Id,
+                OrganizationName = seller.OrganizationName,
+                Country = seller.Country,
+                City = seller.City,
+                PostalCode = seller.PostalCode,
+                Address = seller.Address,
+                Verified = seller.Verified,
+                CreatedAt = seller.CreatedAt,
+                VerifiedAt = seller.VerifiedAt,
             })
             .ToListAsync();
 
@@ -67,18 +67,18 @@ public class SellerController(
     public async Task<ActionResult<ShopUserDTO>> Get(Guid id)
     {
         var seller = await _db.SellerInfo
-        .Where(u => u.Id == id)
-        .Select(s => new SellerDTO
+        .Where(seller => seller.Id == id)
+        .Select(seller => new SellerDTO
         {
-            Id = s.Id,
-            OrganizationName = s.OrganizationName,
-            Country = s.Country,
-            City = s.City,
-            PostalCode = s.PostalCode,
-            Address = s.Address,
-            Verified = s.Verified,
-            CreatedAt = s.CreatedAt,
-            VerifiedAt = s.VerifiedAt,
+            Id = seller.Id,
+            OrganizationName = seller.OrganizationName,
+            Country = seller.Country,
+            City = seller.City,
+            PostalCode = seller.PostalCode,
+            Address = seller.Address,
+            Verified = seller.Verified,
+            CreatedAt = seller.CreatedAt,
+            VerifiedAt = seller.VerifiedAt,
         })
         .FirstOrDefaultAsync();
 
@@ -104,13 +104,13 @@ public class SellerController(
         try
         {
             await _db.SellerInfo
-            .Where(s => s.Id == updatedSeller.Id)
-            .ExecuteUpdateAsync(s => s
-                .SetProperty(p => p.OrganizationName, p => updatedSeller.OrganizationName)
-                .SetProperty(p => p.Country, p => updatedSeller.Country)
-                .SetProperty(p => p.City, p => updatedSeller.City)
-                .SetProperty(p => p.PostalCode, p => updatedSeller.PostalCode)
-                .SetProperty(p => p.Address, p => updatedSeller.Address)
+            .Where(seller => seller.Id == updatedSeller.Id)
+            .ExecuteUpdateAsync(seller => seller
+                .SetProperty(prop => prop.OrganizationName, prop => updatedSeller.OrganizationName)
+                .SetProperty(prop => prop.Country, prop => updatedSeller.Country)
+                .SetProperty(prop => prop.City, prop => updatedSeller.City)
+                .SetProperty(prop => prop.PostalCode, prop => updatedSeller.PostalCode)
+                .SetProperty(prop => prop.Address, prop => updatedSeller.Address)
             );
 
             return Ok(updatedSeller);

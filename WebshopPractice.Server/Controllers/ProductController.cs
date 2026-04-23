@@ -28,13 +28,13 @@ public class ProductController(WebshopDbContext db) : ControllerBase
         //todo this will be made paged like
         List<ProductDTO> productSlice = await _db.Products
             .AsNoTracking()
-            .OrderBy(p => p.Name)
+            .OrderBy(product => product.Name)
             .Take(20)
-            .Select(u => new ProductDTO
+            .Select(product => new ProductDTO
             {
-                Id = u.Id,
-                Name = u.Name,
-                Price = u.Price,
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
             })
             .ToListAsync();
 
@@ -87,12 +87,12 @@ public class ProductController(WebshopDbContext db) : ControllerBase
     public async Task<ActionResult<ProductDTO>> Get(Guid id)
     {
         var product = await _db.Products
-        .Where(p => p.Id == id)
-        .Select(p => new ProductDTO
+        .Where(product => product.Id == id)
+        .Select(product => new ProductDTO
         {
-            Id = p.Id,
-            Name = p.Name,
-            Price = p.Price
+            Id = product.Id,
+            Name = product.Name,
+            Price = product.Price
         })
         .FirstOrDefaultAsync();
 
@@ -112,8 +112,8 @@ public class ProductController(WebshopDbContext db) : ControllerBase
         try
         {
             await _db.Products
-            .Where(p => p.Id == updatedProduct.Id)
-            .ExecuteUpdateAsync(p => p
+            .Where(product => product.Id == updatedProduct.Id)
+            .ExecuteUpdateAsync(product => product
                 .SetProperty(prop => prop.Name, prop => updatedProduct.Name)
                 .SetProperty(prop => prop.Price, prop => updatedProduct.Price)
             );

@@ -15,7 +15,6 @@ const { registerCustomer } = useUser();
 const { registerSeller } = useSeller();
 const isSeller = ref<boolean>(false);
 
-//todo create a seller registration setup
 const userForm = reactive<UserRegistrationData>({
     name: '',
     email: '',

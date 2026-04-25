@@ -14,8 +14,6 @@ export async function processRegistrationResponse(response: Response): Promise<R
     data: ''
   }
 
-  console.log(response);
-
   switch (response.status) {
     case 200: {
       registrationResponse.success = true;

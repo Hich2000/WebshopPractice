@@ -43,8 +43,6 @@ async function loadData(pageNumber: number, pageSize: number) {
         postalCode: element.postalCode,
         address: element.address,
         verified: element.verified as SellerStatus,
-        createdAt: element.createdAt,
-        verifiedAt: element.verifiedAt
       })
     });
 
@@ -68,14 +66,15 @@ const confirm = useConfirm()
 const confirmDelete = (event: any, deleteIndex: number) => {
   confirm.require({
     target: event.currentTarget,
-    message: 'Are you sure you want to delete this user?',
+    message: 'Are you sure you want to delete this seller?',
     icon: 'pi pi-exclamation-triangle',
     acceptLabel: 'Yes',
     rejectLabel: 'No',
     accept: async () => {
       const toDelete = items.value[deleteIndex];
+      if (toDelete === undefined || toDelete.id === null) return;
       loading.value = true;
-      await deleteSeller(toDelete!.id);
+      await deleteSeller(toDelete.id);
       await loadData(pageNumber.value, rows.value);
     },
     reject: () => {

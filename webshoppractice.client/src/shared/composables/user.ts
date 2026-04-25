@@ -143,17 +143,12 @@ async function changeMyPassword(oldPassword: string, newPassword: string, verify
 }
 
 async function deleteUser(id: string): Promise<boolean> {
-
   const response = await fetch(`/shopUser/${id}`, {
     credentials: "include",
     method: "DELETE"
   });
 
-  if (!response.ok) {
-    return false;
-  }
-
-  return true;
+  return response.ok
 }
 
 export function useUser() {

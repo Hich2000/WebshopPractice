@@ -7,8 +7,6 @@ public class SellerDTO
 {
     public Guid Id { get; set; }
 
-    public IEnumerable<ShopUser> Users { get; set; } = [];
-
     public required string OrganizationName { get; set; }
     public required string CommerceNumber { get; set; }
 

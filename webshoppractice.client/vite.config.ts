@@ -75,6 +75,10 @@ export default defineConfig({
       '^/shopUser': {
         target,
         secure: false
+      },
+      '^/seller': {
+        target,
+        secure: false
       }
     },
     port: parseInt(env.DEV_SERVER_PORT || '58180'),

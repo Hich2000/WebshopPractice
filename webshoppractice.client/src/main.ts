@@ -17,8 +17,9 @@ const app = createApp(App)
 import { ConfirmationService } from 'primevue'
 app.use(ConfirmationService);
 
-//navigation
+//imports
 import { createRouter, createWebHistory } from 'vue-router'
+import { useUser } from '@/shared/composables/user';
 import LoginView from './features/user/views/LoginView.vue'
 import HomeView from './shared/views/HomeView.vue'
 import ProfileView from './features/user/views/ProfileView.vue'
@@ -32,6 +33,8 @@ import UsersTable from './features/admin/components/UsersTable.vue'
 import AdminUserForm from './features/admin/components/AdminUserForm.vue'
 import DeleteMyAccount from './features/user/components/DeleteMyAccount.vue'
 import AccountDeleted from './features/user/components/AccountDeleted.vue'
+import SellerTable from './features/admin/components/SellerTable.vue'
+
 
 const routes = [
   { path: '/', component: HomeView },
@@ -77,6 +80,10 @@ const routes = [
       {
         path: 'RegisterAdmin',
         component: AdminUserForm
+      },
+      {
+        path: 'Sellers',
+        component: SellerTable
       }
     ]
   }
@@ -88,7 +95,6 @@ export const router = createRouter({
 })
 
 //setup guard logic
-import { useUser } from '@/shared/composables/user';
 const { fetchCurrentUser } = useUser()
 router.beforeEach(async (to, _from, next) => {
   if (to.matched.length < 1) {

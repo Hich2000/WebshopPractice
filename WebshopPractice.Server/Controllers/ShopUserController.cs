@@ -77,7 +77,7 @@ public class ShopUserController(
 
     [HttpPatch("{id}")]
     [Authorize]
-    public async Task<IActionResult> Patch(string id, [FromBody] ShopUserDTO updatedUser)
+    public async Task<ActionResult<ShopUserDTO>> Patch(string id, [FromBody] ShopUserDTO updatedUser)
     {
         if (id != updatedUser.UserId) return BadRequest();
 
@@ -89,21 +89,14 @@ public class ShopUserController(
             return Unauthorized("You are not authorized to update this user.");
         }
 
-        try
-        {
-            await _db.ShopUsers
-            .Where(user => user.Id == updatedUser.UserId)
-            .ExecuteUpdateAsync(user => user
-                .SetProperty(prop => prop.Email, prop => updatedUser.Email)
-                .SetProperty(prop => prop.Name, prop => updatedUser.Name)
-            );
+        await _db.ShopUsers
+        .Where(user => user.Id == updatedUser.UserId)
+        .ExecuteUpdateAsync(user => user
+            .SetProperty(prop => prop.Email, prop => updatedUser.Email)
+            .SetProperty(prop => prop.Name, prop => updatedUser.Name)
+        );
 
-            return Ok(updatedUser);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        return Ok(updatedUser);
     }
 
     [HttpDelete("{id}")]
@@ -125,14 +118,7 @@ public class ShopUserController(
             return NotFound();
         }
 
-        try
-        {
-            await _userManager.DeleteAsync(userToDelete);
-            return Ok();
-        }
-        catch (Exception)
-        {
-            return BadRequest();
-        }
+        await _userManager.DeleteAsync(userToDelete);
+        return Ok();
     }
 }

@@ -32,16 +32,23 @@ async function buildNavList(): Promise<NavItemList> {
     }
   ];
 
-  //customer specific items
-  const customerMenuItems: MenuItem[] = [];
-  customerMenuItems.push({ label: "Home", command: () => router.push('/') });
-  mainMenuItems.push(...customerMenuItems)
+  //standard items
+  const standardMenuItems: MenuItem[] = [];
+  standardMenuItems.push({ label: "Home", command: () => router.push('/') });
+  mainMenuItems.push(...standardMenuItems)
 
   //admin specific items
   if (currentUser.value?.level === "Admin") {
     const adminMenuItems: MenuItem[] = [];
     adminMenuItems.push({ label: "Admin Panel", command: () => router.push("/Admin") });
     mainMenuItems.push(...adminMenuItems);
+  }
+
+  //seller specific items
+  if (currentUser.value?.level === "Seller") {
+    const sellerMenuItems: MenuItem[] = [];
+    sellerMenuItems.push({ label: "Seller Panel", command: () => router.push("/Seller") });
+    mainMenuItems.push(...sellerMenuItems);
   }
 
   navItemList.value = {

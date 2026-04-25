@@ -34,6 +34,8 @@ import AdminUserForm from './features/admin/components/AdminUserForm.vue'
 import DeleteMyAccount from './features/user/components/DeleteMyAccount.vue'
 import AccountDeleted from './features/user/components/AccountDeleted.vue'
 import SellerTable from './features/admin/components/SellerTable.vue'
+import SellerView from './features/seller/views/SellerView.vue'
+import SellerLinks from './features/seller/components/SellerLinks.vue'
 
 
 const routes = [
@@ -85,6 +87,29 @@ const routes = [
         path: 'Sellers',
         component: SellerTable
       }
+    ]
+  },
+  {
+    path: '/Seller',
+    component: SellerView,
+    meta: { requiresAuth: true, },
+    children: [
+      {
+        path: '',
+        component: SellerLinks,
+      },
+      {
+        path: 'Information',
+        component: PlaceHolderView,
+      },
+      {
+        path: 'Users',
+        component: PlaceHolderView
+      },
+      {
+        path: 'Products',
+        component: PlaceHolderView
+      },
     ]
   }
 ]

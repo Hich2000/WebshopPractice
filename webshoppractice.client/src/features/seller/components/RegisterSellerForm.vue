@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import type { SellerRegistrationData } from '@/shared/composables/registrationData';
+import type { SellerRegistrationData } from '../composables/seller';
 
 const model = defineModel<SellerRegistrationData>({ required: true });
 </script>
 
 <template>
-  <p v-for="e in model.error" :key="e.code" class="form-error">
-    {{ e.description }}
+  <p v-for="e in model.errors" :key="e" class="form-error">
+    {{ e }}
   </p>
   <p v-if="model.success" class="form-success">
     {{ model.success }}

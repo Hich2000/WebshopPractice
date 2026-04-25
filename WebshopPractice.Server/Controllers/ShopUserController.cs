@@ -79,7 +79,6 @@ public class ShopUserController(
     [Authorize]
     public async Task<IActionResult> Patch(string id, [FromBody] ShopUserDTO updatedUser)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
         if (id != updatedUser.UserId) return BadRequest();
 
         //if the currently logged in user is not an admin then they cannot update anyone excepts themselves

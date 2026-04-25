@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using WebshopPractice.Server.Data.Context;
 using WebshopPractice.Server.Data.Models;
 
@@ -22,19 +20,8 @@ public class RegisterController(
     [Route("user")]
     public async Task<IActionResult> RegisterCustomer([FromBody] RegisterRequestBody body)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
         var result = await CreateUser(body, UserLevel.Customer);
-
-        if (!result.Succeeded)
-        {
-            return Conflict(result.Errors);
-        }
-
-        return Ok(new
-        {
-            id = result.UserId
-        });
+        return result.Succeeded ? Ok(result.UserId) : BadRequest(result.Errors);
     }
 
     [HttpPost]
@@ -42,37 +29,20 @@ public class RegisterController(
     [Route("admin")]
     public async Task<IActionResult> RegisterAdmin([FromBody] RegisterRequestBody body)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
         var result = await CreateUser(body, UserLevel.Admin);
-
-        if (!result.Succeeded)
-        {
-            return Conflict(result.Errors);
-        }
-
-        return Ok(new
-        {
-            id = result.UserId
-        });
+        return result.Succeeded ? Ok(result.UserId) : BadRequest(result.Errors);
     }
 
     [HttpPost]
     [Route("seller")]
     public async Task<IActionResult> RegisterSeller([FromBody] RegisterSellerRequestBody body)
     {
-        Console.WriteLine(body);
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
         ShopUser? user = await _userManager.FindByIdAsync(body.UserId.ToString());
         if (user == null)
-        {
-            return BadRequest("Could not find user to register for this seller.");
-        }
+            return BadRequest(new { error = "Could not find user to register for this seller." });
+
         if (user.SellerId != null)
-        {
-            return BadRequest("Cannot link user to this seller.");
-        }
+            return BadRequest(new { error = "Cannot link user to this seller." });
 
         Guid newSellerId = Guid.NewGuid();
         Seller newSeller = new Seller
@@ -88,30 +58,11 @@ public class RegisterController(
         };
 
         await _db.Seller.AddAsync(newSeller);
-
         user.Seller = newSeller;
         user.SellerId = newSellerId;
         user.UserLevel = UserLevel.Seller;
-
-        try
-        {
-            var result = await _db.SaveChangesAsync();
-            if (result > 0)
-            {
-                return Ok(new
-                {
-                    id = newSellerId
-                });
-            }
-            else
-            {
-                return StatusCode(500, "Failed to register Seller.");
-            }
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
+        var result = await _db.SaveChangesAsync();
+        return result > 0 ? Ok(newSellerId) : BadRequest("Failed to register Seller.");
     }
 
     [HttpPatch]
@@ -119,8 +70,6 @@ public class RegisterController(
     [Route("changeOwnPassword")]
     public async Task<IActionResult> ChangeOwnPassword([FromBody] ChangePasswordRequestBody body)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
         var user = await _userManager.GetUserAsync(User);
         var correctPassword = await _userManager.CheckPasswordAsync(user, body.OldPassword);
 
@@ -128,15 +77,7 @@ public class RegisterController(
         if (body.NewPassword != body.VerifyNewPassword) return BadRequest("New password does not match verification field.");
 
         var result = await _userManager.ChangePasswordAsync(user, body.OldPassword, body.NewPassword);
-
-        if (result.Succeeded)
-        {
-            return Ok();
-        }
-        else
-        {
-            return Conflict(result.Errors);
-        }
+        return result.Succeeded ? Ok() : BadRequest(result.Errors);
     }
 
     private async Task<CreateUserResult> CreateUser(RegisterRequestBody body, UserLevel userLevel)
@@ -145,18 +86,17 @@ public class RegisterController(
         var userExists = await _userManager.FindByEmailAsync(body.Email);
         if (userExists != null)
         {
-
             return new CreateUserResult
             {
                 Succeeded = false,
                 Errors = new[]
-            {
-                new IdentityError
                 {
-                    Code = "DuplicateEmail",
-                    Description = "This email is already in use."
+                    new IdentityError
+                    {
+                        Code = "DuplicateEmail",
+                        Description = "This email is already in use."
+                    }
                 }
-            }
             };
         }
 

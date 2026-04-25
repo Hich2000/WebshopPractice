@@ -1,4 +1,4 @@
-import { useRegistrationData, type RegistrationError } from "@/shared/composables/registrationData";
+import { processRegistrationResponse, type RegistrationResponse } from "@/shared/composables/registrationResponse";
 
 export enum SellerStatus {
   Pending,
@@ -7,21 +7,29 @@ export enum SellerStatus {
   Suspended
 }
 export interface Seller {
-  id: string,
+  id: string | null,
   organizationName: string,
   commerceNumber: string,
   country: string,
   city: string,
   postalCode: string,
   address: string,
-  verified: SellerStatus,
-  createdAt: string,
-  verifiedAt: string | null
+  verified: SellerStatus | null,
 }
 
-const { processRegistrationResponse } = useRegistrationData();
+export interface SellerRegistrationData {
+  organizationName: string,
+  commerceNumber: string,
+  country: string,
+  city: string,
+  postalCode: string,
+  address: string,
+  errors: string[] | null,
+  success: string | null
+}
 
-async function registerSeller(seller: Seller, firstUserId: string): Promise<string | RegistrationError[]> {
+
+async function registerSeller(seller: Seller, firstUserId: string): Promise<RegistrationResponse<string>> {
   const response = await fetch("/register/seller", {
     method: "POST",
     credentials: "include",
@@ -45,6 +53,7 @@ async function deleteSeller(id: string): Promise<boolean> {
 
   return response.ok
 }
+
 
 export function useSeller() {
   return {

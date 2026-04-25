@@ -5,10 +5,9 @@ import RegisterSellerForm from '@/features/seller/components/RegisterSellerForm.
 
 
 import { reactive, ref } from 'vue';
-import { type SellerRegistrationData, type UserRegistrationData } from '@/shared/composables/registrationData';
 import { Button, Checkbox } from 'primevue';
-import { useUser } from '@/shared/composables/user';
-import { useSeller, type Seller } from '@/features/seller/composables/seller';
+import { useSeller, type Seller, type SellerRegistrationData } from '@/features/seller/composables/seller';
+import { useUser, type UserRegistrationData } from '@/shared/composables/user';
 
 
 const { registerCustomer } = useUser();
@@ -19,7 +18,7 @@ const userForm = reactive<UserRegistrationData>({
     name: '',
     email: '',
     password: '',
-    error: null,
+    errors: null,
     success: null
 })
 
@@ -30,14 +29,14 @@ const sellerForm = reactive<SellerRegistrationData>({
   city: '',
   postalCode: '',
   address: '',
-  error: null,
+  errors: null,
   success: null
 })
 
 async function onSubmit() {
   //first the user account
   userForm.success = null;
-  userForm.error = null;
+  userForm.errors = null;
 
   let newUserId: string | null = null;
 
@@ -47,14 +46,14 @@ async function onSubmit() {
     userForm.password,
   );
 
-  if (typeof userAccountResponse === 'string') {
+  if (userAccountResponse.success) {
     userForm.success = "Account successfully registered";
     userForm.email = '';
     userForm.name = '';
     userForm.password = '';
-    newUserId = userAccountResponse;
+    newUserId = userAccountResponse.data;
   } else {
-    userForm.error = userAccountResponse;
+    userForm.errors = userAccountResponse.errors;
   }
 
   //then the seller information
@@ -67,13 +66,14 @@ async function onSubmit() {
       city: sellerForm.city,
       postalCode: sellerForm.postalCode,
       address: sellerForm.address,
+      verified: null
     };
     const sellerAccountResponse = await registerSeller(newSeller, newUserId);
 
-    if (typeof sellerAccountResponse === 'string') {
+    if (sellerAccountResponse.success) {
       sellerForm.success = "Seller account successfully registered";
     } else {
-      sellerForm.error = sellerAccountResponse;
+      sellerForm.errors = sellerAccountResponse.errors;
     }
   }
 }

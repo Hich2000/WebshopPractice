@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useUser } from '@/shared/composables/user'
 import { Button } from 'primevue'
-import type { RegistrationError } from '@/shared/composables/registrationData'
+import type { RegistrationError } from '@/shared/composables/registrationResponse'
 
 const { fetchCurrentUser, changeMyPassword } = useUser()
 

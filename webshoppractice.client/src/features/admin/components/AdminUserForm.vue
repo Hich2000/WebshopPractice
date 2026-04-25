@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import RegisterForm from '@/features/user/components/RegisterForm.vue';
-import type { UserRegistrationData } from '@/shared/composables/registrationData';
-import { useUser } from '@/shared/composables/user';
+import { useUser, type UserRegistrationData } from '@/shared/composables/user';
 import { Button } from 'primevue';
 import { reactive } from 'vue';
 
@@ -13,7 +12,7 @@ const adminUserForm = reactive<
   name: '',
   email: '',
   password: '',
-  error: null,
+  errors: null,
   success: null
 })
 
@@ -21,7 +20,7 @@ async function onSubmit() {
 
   //first the user account
   adminUserForm.success = null;
-  adminUserForm.error = null;
+  adminUserForm.errors = null;
 
   const userAccountResponse = await registerAdmin(
     adminUserForm.name,
@@ -29,10 +28,10 @@ async function onSubmit() {
     adminUserForm.password,
   );
 
-  if (userAccountResponse === true) {
+  if (userAccountResponse.success) {
     adminUserForm.success = "Account successfully registered";
   } else {
-    adminUserForm.error = userAccountResponse;
+    adminUserForm.errors = userAccountResponse.errors;
   }
 }
 </script>

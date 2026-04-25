@@ -55,8 +55,6 @@ public class ProductController(WebshopDbContext db) : ControllerBase
     [Authorize]
     public async Task<IActionResult> Post([FromBody] ProductDTO newProduct)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
-
         await _db.Products.AddAsync(new Product
         {
             Id = Guid.NewGuid(),
@@ -104,7 +102,6 @@ public class ProductController(WebshopDbContext db) : ControllerBase
     [Authorize]
     public async Task<IActionResult> Patch(Guid id, [FromBody] ProductDTO updatedProduct)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
         if (id != updatedProduct.Id) return BadRequest();
         
         //todo when seller accounts are setup check if the user is an admin or the seller that owns the product

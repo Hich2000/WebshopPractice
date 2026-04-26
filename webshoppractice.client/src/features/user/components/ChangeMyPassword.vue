@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue'
 import { useUser } from '@/shared/composables/user'
 import { Button } from 'primevue'
-import type { RegistrationError } from '@/shared/composables/registrationResponse'
 
 const { fetchCurrentUser, changeMyPassword } = useUser()
 
@@ -10,7 +9,7 @@ const oldPassword = ref<string>('')
 const newPassword = ref<string>('')
 const verifyPassword = ref<string>('')
 
-const error = ref<RegistrationError[] | null>(null)
+const error = ref<string[] | null>(null)
 const success = ref<string | null>(null)
 
 onMounted(async () => {
@@ -22,12 +21,7 @@ async function onSubmit() {
   success.value = null
 
   if (newPassword.value !== verifyPassword.value) {
-    error.value = [
-      {
-        code: 'VerificationFailure',
-        description: 'New password does not match verification'
-      }
-    ]
+    error.value = ['New password does not match verification']
     return
   }
 
@@ -54,8 +48,8 @@ async function onSubmit() {
     <form @submit.prevent="onSubmit">
       <h1>Change password</h1>
 
-      <p v-for="e in error" :key="e.code" class="form-error">
-        {{ e.description }}
+      <p v-for="e in error" :key="e" class="form-error">
+        {{ e }}
       </p>
 
       <p v-if="success" class="form-success">

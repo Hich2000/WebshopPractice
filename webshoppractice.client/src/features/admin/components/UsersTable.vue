@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Button, Column, DataTable } from 'primevue';
 import { onMounted, ref, type Ref } from 'vue';
-import { useUser, type User } from '@/shared/composables/user';
+import { UserLevel, useUser, type User } from '@/shared/composables/user';
 import { useConfirm } from 'primevue/useconfirm'
 import { ConfirmPopup } from 'primevue';
 
@@ -30,7 +30,7 @@ async function loadData(pageNumber: number, pageSize: number) {
     const data = await response.json();
 
     items.value = [];
-    data.body.forEach((element: { userId: string; name: string; email: string; userLevel: string; }) => {
+    data.body.forEach((element: { userId: string; name: string; email: string; userLevel: UserLevel; }) => {
       items.value.push({
         id: element.userId,
         name: element.name,

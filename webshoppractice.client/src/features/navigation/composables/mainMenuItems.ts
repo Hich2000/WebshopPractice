@@ -1,5 +1,5 @@
 import type { MenuItem } from "primevue/menuitem";
-import { useUser } from '@/shared/composables/user'
+import { UserLevel, useUser } from '@/shared/composables/user'
 import { router } from '@/main';
 import { ref } from "vue";
 
@@ -38,14 +38,14 @@ async function buildNavList(): Promise<NavItemList> {
   mainMenuItems.push(...standardMenuItems)
 
   //admin specific items
-  if (currentUser.value?.level === "Admin") {
+  if (currentUser.value?.level === UserLevel.Admin) {
     const adminMenuItems: MenuItem[] = [];
     adminMenuItems.push({ label: "Admin Panel", command: () => router.push("/Admin") });
     mainMenuItems.push(...adminMenuItems);
   }
 
   //seller specific items
-  if (currentUser.value?.level === "Seller") {
+  if (currentUser.value?.level === UserLevel.Seller) {
     const sellerMenuItems: MenuItem[] = [];
     sellerMenuItems.push({ label: "Seller Panel", command: () => router.push("/Seller") });
     mainMenuItems.push(...sellerMenuItems);

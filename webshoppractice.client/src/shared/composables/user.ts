@@ -1,11 +1,17 @@
 import { ref, readonly } from "vue";
 import { processRegistrationResponse, type RegistrationResponse } from "./registrationResponse";
 
+export enum UserLevel {
+  Customer = "Customer",
+  Seller = "Seller",
+  Admin = "Admin"
+}
+
 export interface User {
   id: string,
   name: string,
   email: string,
-  level: string
+  level: UserLevel
 }
 
 export interface UserRegistrationData {
@@ -35,7 +41,7 @@ async function fetchCurrentUser(force: boolean = false): Promise<User | null> {
       id: data.id,
       name: data.name,
       email: data.email,
-      level: data.level
+      level: data.level as UserLevel
     }
   }
 
@@ -96,7 +102,7 @@ async function updateInfo(id: string, name: string, email: string): Promise<bool
 }
 
 async function changeMyPassword(oldPassword: string, newPassword: string, verifyNewPassword: string)
-  : Promise<boolean> {
+  : Promise<true | string[]> {
 
   const response = await fetch('/register/changeOwnPassword', {
     method: "PATCH",
@@ -111,7 +117,24 @@ async function changeMyPassword(oldPassword: string, newPassword: string, verify
     })
   });
 
-  return response.ok;
+  if (response.ok) {
+    return true;
+  }
+
+  let data: unknown = null;
+  try {
+    data = await response.json();
+  } catch {
+    // No body or not JSON — ignore
+  }
+
+  console.log(data);
+
+  if (Array.isArray(data)) {
+    return data;
+  }
+
+  return ["An unknown error has occurred."];
 }
 
 

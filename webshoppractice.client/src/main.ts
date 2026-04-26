@@ -19,7 +19,7 @@ app.use(ConfirmationService);
 
 //imports
 import { createRouter, createWebHistory } from 'vue-router'
-import { useUser } from '@/shared/composables/user';
+import { UserLevel, useUser } from '@/shared/composables/user';
 import LoginView from './features/user/views/LoginView.vue'
 import HomeView from './shared/views/HomeView.vue'
 import ProfileView from './features/user/views/ProfileView.vue'
@@ -70,7 +70,7 @@ const routes = [
   {
     path: '/Admin',
     component: AdminView,
-    meta: { requiresAuth: true, },
+    meta: { requiresAuth: true, requiredLevel: UserLevel.Admin },
     children: [
       {
         path: '',
@@ -93,7 +93,7 @@ const routes = [
   {
     path: '/Seller',
     component: SellerView,
-    meta: { requiresAuth: true, },
+    meta: { requiresAuth: true, requiredLevel: UserLevel.Seller },
     children: [
       {
         path: '',
@@ -124,18 +124,24 @@ export const router = createRouter({
 const { fetchCurrentUser } = useUser()
 router.beforeEach(async (to, _from, next) => {
   if (to.matched.length < 1) {
-    router.push('/NoAccess');
+    next('/NoAccess');
   }
 
   const currentUser = await fetchCurrentUser();
   if (to.meta.requiresAuth && currentUser == null) {
     next({
-      path: '/login',
+      path: '/Login',
       query: { redirect: to.fullPath }
     });
-  } else {
-    next();
   }
+
+  if (to.meta.requiredLevel != null) {
+    if (!currentUser || currentUser.level != to.meta.requiredLevel) {
+      next('/NoAccess');
+    }
+  }
+
+  next();
 });
 
 app.use(router)

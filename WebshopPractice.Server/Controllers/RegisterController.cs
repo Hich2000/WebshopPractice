@@ -77,7 +77,7 @@ public class RegisterController(
         if (body.NewPassword != body.VerifyNewPassword) return BadRequest("New password does not match verification field.");
 
         var result = await _userManager.ChangePasswordAsync(user, body.OldPassword, body.NewPassword);
-        return result.Succeeded ? Ok() : BadRequest(result.Errors);
+        return result.Succeeded ? Ok() : BadRequest(result.Errors.Select(error => error.Description));
     }
 
     private async Task<CreateUserResult> CreateUser(RegisterRequestBody body, UserLevel userLevel)

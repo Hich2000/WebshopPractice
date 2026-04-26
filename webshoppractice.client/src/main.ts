@@ -38,6 +38,7 @@ import SellerView from './features/seller/views/SellerView.vue'
 import SellerLinks from './features/seller/components/SellerLinks.vue'
 import SellerInformation from './features/seller/components/SellerInformation.vue'
 import MyProducts from './features/seller/components/MyProducts.vue'
+import NewProduct from './features/seller/components/NewProduct.vue'
 
 
 const routes = [
@@ -111,6 +112,10 @@ const routes = [
       {
         path: 'Products',
         component: MyProducts
+      },
+      {
+        path: 'NewProduct',
+        component: NewProduct
       },
     ]
   }

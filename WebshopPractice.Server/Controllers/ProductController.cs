@@ -57,20 +57,17 @@ public class ProductController(
 
     [HttpPost]
     [Authorize(Policy = "Seller")]
-    public async Task<IActionResult> Post([FromBody] ProductDTO newProduct)
+    public async Task<IActionResult> Post([FromBody] CreateProductDTO body)
     {
         ShopUser? user = await _usermanager.GetUserAsync(User);
-        if (user!.SellerId == null)
-        {
-            return BadRequest();
-        }
+        if (user!.SellerId == null) return BadRequest();
 
         Guid newId = Guid.NewGuid();
         await _db.Products.AddAsync(new Product
         {
             Id = newId,
-            Name = newProduct.Name,
-            Price = newProduct.Price,
+            Name = body.Name,
+            Price = body.Price,
             SellerId = user.SellerId.Value,
         });
 
@@ -146,5 +143,11 @@ public class ProductController(
     {
         var user = await _usermanager.GetUserAsync(User);
         return user?.SellerId == product.SellerId;
+    }
+
+    private class CreateProductDTO
+    {
+        public required string Name { get; set; }
+        public required decimal Price { get; set; }
     }
 }

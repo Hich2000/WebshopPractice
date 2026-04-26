@@ -6,22 +6,25 @@ export type Product = {
 }
 
 
-async function createProduct(name: string, price: string): Promise<boolean>
-{
+async function createProduct(name: string, price: number): Promise<boolean> {
   const response = await fetch("/product", {
     method: "POST",
+    headers: {
+      'Content-Type': 'application/json'
+    },
     credentials: "include",
     body: JSON.stringify({
       name: name,
-      price: price
+      price: price,
     })
   });
+
+  console.log(await response.text())
 
   return response.ok;
 }
 
-async function getProductInfo(id: string): Promise<Product | false>
-{
+async function getProductInfo(id: string): Promise<Product | false> {
   const response = await fetch(`/product/${id}`);
 
   try {
@@ -39,8 +42,7 @@ async function getProductInfo(id: string): Promise<Product | false>
   }
 }
 
-async function updateProductInfo(id: string, name: string, price: string): Promise<boolean>
-{
+async function updateProductInfo(id: string, name: string, price: string): Promise<boolean> {
   const response = await fetch(`/product/${id}`, {
     method: "PATCH",
     credentials: "include",
@@ -54,8 +56,7 @@ async function updateProductInfo(id: string, name: string, price: string): Promi
   return response.ok;
 }
 
-async function deleteProduct(id: string): Promise<boolean>
-{
+async function deleteProduct(id: string): Promise<boolean> {
   const response = await fetch(`/product/${id}`, {
     method: "DELETE",
     credentials: "include",

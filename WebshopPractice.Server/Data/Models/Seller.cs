@@ -8,6 +8,8 @@ public class Seller
     public Guid Id { get; set; }
 
     public ICollection<ShopUser> Users { get; set; } = [];
+    public ICollection<Product> Products { get; set; } = [];
+
 
     public required string OrganizationName { get; set; }
     public required string CommerceNumber { get; set; }

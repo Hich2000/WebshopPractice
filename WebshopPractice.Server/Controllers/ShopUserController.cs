@@ -31,15 +31,15 @@ public class ShopUserController(
 
         List<ShopUserDTO> userSlice = await _db.ShopUsers
             .AsNoTracking()
-            .OrderBy(u => u.Name)
+            .OrderBy(user => user.Name)
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
-            .Select(u => new ShopUserDTO
+            .Select(user => new ShopUserDTO
             {
-                UserId = u.Id,
-                Email = u.Email,
-                Name = u.Name,
-                UserLevel = u.UserLevel
+                UserId = user.Id,
+                Email = user.Email,
+                Name = user.Name,
+                UserLevel = user.UserLevel
             })
             .ToListAsync();
 
@@ -61,13 +61,13 @@ public class ShopUserController(
     public async Task<ActionResult<ShopUserDTO>> Get(string id)
     {
         var user = await _db.ShopUsers
-        .Where(u => u.Id == id)
-        .Select(u => new ShopUserDTO
+        .Where(user => user.Id == id)
+        .Select(user => new ShopUserDTO
         {
-            UserId = u.Id,
-            Email = u.Email,
-            Name = u.Name,
-            UserLevel = u.UserLevel
+            UserId = user.Id,
+            Email = user.Email,
+            Name = user.Name,
+            UserLevel = user.UserLevel
         })
         .FirstOrDefaultAsync();
 
@@ -77,9 +77,8 @@ public class ShopUserController(
 
     [HttpPatch("{id}")]
     [Authorize]
-    public async Task<IActionResult> Patch(string id, [FromBody] ShopUserDTO updatedUser)
+    public async Task<ActionResult<ShopUserDTO>> Patch(string id, [FromBody] ShopUserDTO updatedUser)
     {
-        if (!ModelState.IsValid) return BadRequest(ModelState);
         if (id != updatedUser.UserId) return BadRequest();
 
         //if the currently logged in user is not an admin then they cannot update anyone excepts themselves
@@ -87,24 +86,17 @@ public class ShopUserController(
         ShopUser? currentUser = await _userManager.GetUserAsync(User);
         if ( !isAdmin && currentUser?.Id != id)
         {
-            return BadRequest("You are not authorized to update this user.");
+            return Unauthorized("You are not authorized to update this user.");
         }
 
-        try
-        {
-            await _db.ShopUsers
-            .Where(u => u.Id == updatedUser.UserId)
-            .ExecuteUpdateAsync(u => u
-                .SetProperty(p => p.Email, p => updatedUser.Email)
-                .SetProperty(p => p.Name, p => updatedUser.Name)
-            );
+        await _db.ShopUsers
+        .Where(user => user.Id == updatedUser.UserId)
+        .ExecuteUpdateAsync(user => user
+            .SetProperty(prop => prop.Email, prop => updatedUser.Email)
+            .SetProperty(prop => prop.Name, prop => updatedUser.Name)
+        );
 
-            return Ok(updatedUser);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        return Ok(updatedUser);
     }
 
     [HttpDelete("{id}")]
@@ -117,23 +109,16 @@ public class ShopUserController(
         ShopUser? currentUser = await _userManager.GetUserAsync(User);
         if (!isAdmin && currentUser?.Id != id)
         {
-            return BadRequest("You are not authorized to perform this action.");
+            return Unauthorized("You are not authorized to perform this action.");
         }
 
         ShopUser? userToDelete = await _userManager.FindByIdAsync(id);
         if (userToDelete == null)
         {
-            return Ok();
-        }
-
-        try
-        {
-            await _userManager.DeleteAsync(userToDelete);
-            return Ok();
-        }
-        catch (Exception)
-        {
             return NotFound();
         }
+
+        await _userManager.DeleteAsync(userToDelete);
+        return Ok();
     }
 }

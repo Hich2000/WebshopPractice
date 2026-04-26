@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebshopPractice.Server.Data.Context;
 
@@ -10,9 +11,11 @@ using WebshopPractice.Server.Data.Context;
 namespace WebshopPractice.Server.Migrations
 {
     [DbContext(typeof(WebshopDbContext))]
-    partial class WebshopDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260422121326_sellerinfo-dbcontext")]
+    partial class sellerinfodbcontext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.5");
@@ -168,7 +171,7 @@ namespace WebshopPractice.Server.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("WebshopPractice.Server.Data.Models.Seller", b =>
+            modelBuilder.Entity("WebshopPractice.Server.Data.Models.SellerInfo", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -179,10 +182,6 @@ namespace WebshopPractice.Server.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("CommerceNumber")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -211,7 +210,7 @@ namespace WebshopPractice.Server.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Seller");
+                    b.ToTable("SellerInfo");
                 });
 
             modelBuilder.Entity("WebshopPractice.Server.Data.Models.ShopUser", b =>
@@ -264,7 +263,7 @@ namespace WebshopPractice.Server.Migrations
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("TEXT");
 
-                    b.Property<Guid?>("SellerId")
+                    b.Property<Guid?>("SellerInfoId")
                         .HasColumnType("TEXT");
 
                     b.Property<Guid?>("ShoppingCartId")
@@ -290,7 +289,7 @@ namespace WebshopPractice.Server.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex");
 
-                    b.HasIndex("SellerId");
+                    b.HasIndex("SellerInfoId");
 
                     b.HasIndex("ShoppingCartId")
                         .IsUnique();
@@ -372,21 +371,20 @@ namespace WebshopPractice.Server.Migrations
 
             modelBuilder.Entity("WebshopPractice.Server.Data.Models.ShopUser", b =>
                 {
-                    b.HasOne("WebshopPractice.Server.Data.Models.Seller", "Seller")
+                    b.HasOne("WebshopPractice.Server.Data.Models.SellerInfo", "SellerInfo")
                         .WithMany("Users")
-                        .HasForeignKey("SellerId")
-                        .OnDelete(DeleteBehavior.SetNull);
+                        .HasForeignKey("SellerInfoId");
 
                     b.HasOne("WebshopPractice.Server.Data.Models.ShoppingCart", "ShoppingCart")
                         .WithOne("ShopUser")
                         .HasForeignKey("WebshopPractice.Server.Data.Models.ShopUser", "ShoppingCartId");
 
-                    b.Navigation("Seller");
+                    b.Navigation("SellerInfo");
 
                     b.Navigation("ShoppingCart");
                 });
 
-            modelBuilder.Entity("WebshopPractice.Server.Data.Models.Seller", b =>
+            modelBuilder.Entity("WebshopPractice.Server.Data.Models.SellerInfo", b =>
                 {
                     b.Navigation("Users");
                 });

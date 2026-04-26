@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 using WebshopPractice.Server.Data.Models;
 
 namespace WebshopPractice.Server.Data.Context;
@@ -10,6 +11,7 @@ public class WebshopDbContext(DbContextOptions<WebshopDbContext> options)
 {
     public DbSet<Product> Products { get; set; }
     public DbSet<ShopUser> ShopUsers { get; set; }
+    public DbSet<Seller> Seller { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -24,5 +26,17 @@ public class WebshopDbContext(DbContextOptions<WebshopDbContext> options)
         builder.Entity<ShopUser>()
             .Property(u => u.Email)
             .IsRequired();
+
+        //set created at default value
+        builder.Entity<Seller>()
+            .Property(s => s.CreatedAt)
+            .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+        //fixing on delete behaviour for seller info
+        builder.Entity<ShopUser>()
+            .HasOne(u => u.Seller)
+            .WithMany(s => s.Users)
+            .HasForeignKey(u => u.SellerId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

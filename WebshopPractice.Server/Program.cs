@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using WebshopPractice.Server.Data.Context;
@@ -109,6 +111,23 @@ if (app.Environment.IsDevelopment())
         options.SwaggerEndpoint("/openapi/v1.json", "v1");
     });
 }
+
+app.UseExceptionHandler(app => {
+    app.Run(async context =>
+    {
+        var exception = context.Features.Get<IExceptionHandlerFeature>()?.Error;
+
+        var problem = new ProblemDetails
+        {
+            Title = "An unexpected error occurred",
+            Status = StatusCodes.Status500InternalServerError,
+            Detail = exception?.Message
+        };
+
+        context.Response.StatusCode = problem.Status.Value;
+        await context.Response.WriteAsJsonAsync(problem);
+    });
+});
 
 app.UseHttpsRedirection();
 

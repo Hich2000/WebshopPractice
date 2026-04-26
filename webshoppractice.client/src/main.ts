@@ -17,24 +17,30 @@ const app = createApp(App)
 import { ConfirmationService } from 'primevue'
 app.use(ConfirmationService);
 
-//navigation
+//imports
 import { createRouter, createWebHistory } from 'vue-router'
-import LoginView from './views/LoginView.vue'
-import ProductPage from './components/productComponents/ProductPage.vue'
-import ProfileView from './views/ProfileView.vue'
-import MyInformation from './components/profileComponents/MyInformation.vue'
-import ChangeMyPassword from './components/profileComponents/ChangeMyPassword.vue'
-import AdminView from './views/AdminView.vue'
-import AdminLinks from './components/adminComponents/adminMenuComponents/AdminLinks.vue'
-import NoAccessView from './views/NoAccessView.vue'
-import PlaceHolderView from './views/PlaceHolderView.vue'
-import UsersTable from './components/adminComponents/userManagementComponents/UsersTable.vue'
-import AdminUserForm from './components/adminComponents/userManagementComponents/AdminUserForm.vue'
-import DeleteMyAccount from './components/profileComponents/DeleteMyAccount.vue'
-import AccountDeleted from './components/profileComponents/AccountDeleted.vue'
+import { useUser } from '@/shared/composables/user';
+import LoginView from './features/user/views/LoginView.vue'
+import HomeView from './shared/views/HomeView.vue'
+import ProfileView from './features/user/views/ProfileView.vue'
+import MyInformation from './features/user/components/MyInformation.vue'
+import ChangeMyPassword from './features/user/components/ChangeMyPassword.vue'
+import AdminView from './features/admin/views/AdminView.vue'
+import AdminLinks from './features/admin/components/AdminLinks.vue'
+import NoAccessView from './shared/views/NoAccessView.vue'
+import PlaceHolderView from './shared/views/PlaceHolderView.vue'
+import UsersTable from './features/admin/components/UsersTable.vue'
+import AdminUserForm from './features/admin/components/AdminUserForm.vue'
+import DeleteMyAccount from './features/user/components/DeleteMyAccount.vue'
+import AccountDeleted from './features/user/components/AccountDeleted.vue'
+import SellerTable from './features/admin/components/SellerTable.vue'
+import SellerView from './features/seller/views/SellerView.vue'
+import SellerLinks from './features/seller/components/SellerLinks.vue'
+import SellerInformation from './features/seller/components/SellerInformation.vue'
+
 
 const routes = [
-  { path: '/', component: ProductPage },
+  { path: '/', component: HomeView },
   { path: '/NoAccess', component: NoAccessView },
   { path: '/Placeholder', component: PlaceHolderView },
   { path: '/Login', component: LoginView },
@@ -77,7 +83,34 @@ const routes = [
       {
         path: 'RegisterAdmin',
         component: AdminUserForm
+      },
+      {
+        path: 'Sellers',
+        component: SellerTable
       }
+    ]
+  },
+  {
+    path: '/Seller',
+    component: SellerView,
+    meta: { requiresAuth: true, },
+    children: [
+      {
+        path: '',
+        component: SellerLinks,
+      },
+      {
+        path: 'Information',
+        component: SellerInformation,
+      },
+      {
+        path: 'Users',
+        component: PlaceHolderView
+      },
+      {
+        path: 'Products',
+        component: PlaceHolderView
+      },
     ]
   }
 ]
@@ -88,7 +121,6 @@ export const router = createRouter({
 })
 
 //setup guard logic
-import { useUser } from '@/composables/user';
 const { fetchCurrentUser } = useUser()
 router.beforeEach(async (to, _from, next) => {
   if (to.matched.length < 1) {

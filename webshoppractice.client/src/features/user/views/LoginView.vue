@@ -59,7 +59,7 @@ async function onSubmit() {
   //then the seller information
   if (isSeller.value && newUserId !== null) {
     const newSeller: Seller = {
-      id: null,
+      id: '',
       organizationName: sellerForm.organizationName,
       commerceNumber: sellerForm.commerceNumber,
       country: sellerForm.country,
@@ -77,7 +77,6 @@ async function onSubmit() {
     }
   }
 }
-
 </script>
 
 <template>

@@ -19,7 +19,7 @@ export interface UserRegistrationData {
 const currentUser = ref<User | null>(null)
 const initialized = ref(false)
 
-async function fetchCurrentUser(force = false): Promise<User | null> {
+async function fetchCurrentUser(force: boolean = false): Promise<User | null> {
   if (initialized.value && !force) {
     return currentUser.value
   }
@@ -27,7 +27,7 @@ async function fetchCurrentUser(force = false): Promise<User | null> {
   const response = await fetch('/me', {
     credentials: "include"
   })
-  if (response.status == 401 || !response.ok) {
+  if (!response.ok) {
     currentUser.value = null
   } else {
     const data = await response.json()

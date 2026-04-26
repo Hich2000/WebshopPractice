@@ -15,8 +15,8 @@ public class SellerDTO
     public required string PostalCode { get; set; }
     public required string Address { get; set; }
 
-    public SellerStatus Verified { get; set; }
+    public SellerStatus Verified { get; set; } = SellerStatus.Pending;
 
-    public DateTime CreatedAt { get; set; }
-    public DateTime? VerifiedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime? VerifiedAt { get; set; } = null;
 }

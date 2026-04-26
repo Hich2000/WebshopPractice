@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using WebshopPractice.Server.Data.DTO;
 using WebshopPractice.Server.Data.Models;
 
 namespace WebshopPractice.Server.Controllers;
@@ -17,7 +18,7 @@ public class LoginController(
 
     [HttpGet("me")]
     [Authorize]
-    public async Task<IActionResult> Me()
+    public async Task<ActionResult<ShopUserDTO>> Me()
     {
         ShopUser? user = await _userManager.GetUserAsync(User);
 

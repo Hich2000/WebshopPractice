@@ -36,6 +36,7 @@ import AccountDeleted from './features/user/components/AccountDeleted.vue'
 import SellerTable from './features/admin/components/SellerTable.vue'
 import SellerView from './features/seller/views/SellerView.vue'
 import SellerLinks from './features/seller/components/SellerLinks.vue'
+import SellerInformation from './features/seller/components/SellerInformation.vue'
 
 
 const routes = [
@@ -100,7 +101,7 @@ const routes = [
       },
       {
         path: 'Information',
-        component: PlaceHolderView,
+        component: SellerInformation,
       },
       {
         path: 'Users',

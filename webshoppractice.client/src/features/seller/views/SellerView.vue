@@ -1,6 +1,17 @@
 <script setup lang="ts">
 import { router } from '@/main';
 import { Button } from 'primevue';
+import { onMounted } from 'vue';
+import { useSeller } from '../composables/seller';
+
+const { fetchSellerData, currentSeller } = useSeller();
+
+onMounted(async () => {
+  await fetchSellerData()
+  if (currentSeller === null) {
+    router.push('/login');
+  }
+});
 
 </script>
 

@@ -7,7 +7,7 @@ const menuItems: MenuItem[] = [
   {
     label: 'Seller Information',
     icon: 'pi pi-user',
-    command: () => router.push('/Seller/Users')
+    command: () => router.push('/Seller/Information')
   },
   {
     label: 'Users',

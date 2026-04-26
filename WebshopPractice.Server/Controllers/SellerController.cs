@@ -23,6 +23,36 @@ public class SellerController(
     private readonly UserManager<ShopUser> _userManager = userManager;
 
     [HttpGet]
+    [Route("me")]
+    [Authorize]
+    public async Task<ActionResult<SellerDTO>> Me()
+    {
+        ShopUser? user = await _userManager.GetUserAsync(User);
+        if (user == null || user.UserLevel != UserLevel.Seller) return Unauthorized();
+
+        SellerDTO? Seller = await _db.Seller
+            .Where(seller => seller.Id == user.SellerId)
+            .Select(seller => new SellerDTO
+            {
+                Id = seller.Id,
+                OrganizationName = seller.OrganizationName,
+                CommerceNumber = seller.CommerceNumber,
+                Country = seller.Country,
+                City = seller.City,
+                PostalCode = seller.PostalCode,
+                Address = seller.Address,
+                Verified = seller.Verified,
+                CreatedAt = seller.CreatedAt,
+                VerifiedAt = seller.VerifiedAt
+            })
+            .FirstOrDefaultAsync();
+
+        if (Seller == null) return BadRequest();
+
+        return Ok(Seller);
+    }
+
+    [HttpGet]
     [Route("Paged")]
     [Authorize(Policy = "Admin")]
     public async Task<PaginatedTable<SellerDTO>> GetPaged(int pageNumber = 1, int pageSize = _smallestPageLength)
@@ -48,6 +78,7 @@ public class SellerController(
                 CreatedAt = seller.CreatedAt,
                 VerifiedAt = seller.VerifiedAt,
             })
+            .OrderBy(seller => seller.OrganizationName)
             .ToListAsync();
 
         int totalRecordCount = await _db.Seller.CountAsync();
@@ -65,7 +96,7 @@ public class SellerController(
 
     [HttpGet("{id}")]
     [Authorize]
-    public async Task<ActionResult<ShopUserDTO>> Get(Guid id)
+    public async Task<ActionResult<SellerDTO>> Get(Guid id)
     {
         var seller = await _db.Seller
         .Where(seller => seller.Id == id)
@@ -88,9 +119,49 @@ public class SellerController(
         return Ok(seller);
     }
 
+    [HttpGet("{id}/users")]
+    [Authorize]
+    public async Task<ActionResult<PaginatedTable<ShopUserDTO>>> GetUsers(Guid id, int pageNumber = 1, int pageSize = _smallestPageLength)
+    {
+        if (!_allowedPageLength.Contains(pageSize)) pageSize = _smallestPageLength;
+        if (pageNumber < 1) pageNumber = 1;
+
+        //if the currently logged in user is not an admin then they cannot update anyone excepts themselves
+        bool isAdmin = User.Claims.FirstOrDefault(c => c.Type == "UserLevel")?.Value == UserLevel.Admin.ToString();
+        ShopUser? currentUser = await _userManager.GetUserAsync(User);
+        if (!isAdmin && currentUser?.SellerId != id)
+        {
+            return Unauthorized();
+        }
+
+        var userSlice = await _db.ShopUsers
+            .Where(user => user.SellerId == id)
+            .Select(user => new ShopUserDTO
+            {
+                UserId = user.Id,
+                Name = user.Name,
+                Email = user.Email,
+                UserLevel = user.UserLevel
+            })
+            .OrderBy(user => user.Name)
+            .ToListAsync();
+
+        int totalRecordCount = await _db.ShopUsers.CountAsync(user => user.SellerId == id);
+        int pageCount = (int)Math.Ceiling((double)totalRecordCount / pageSize);
+
+        return Ok(new PaginatedTable<ShopUserDTO>
+        {
+            PageNumber = pageNumber,
+            PageCount = pageCount,
+            PageSize = pageSize,
+            TotalRecordCount = totalRecordCount,
+            Body = userSlice
+        });
+    }
+
     [HttpPatch("{id}")]
     [Authorize]
-    public async Task<IActionResult> Patch(Guid id, [FromBody] SellerDTO updatedSeller)
+    public async Task<ActionResult<SellerDTO>> Patch(Guid id, [FromBody] SellerDTO updatedSeller)
     {
         if (id != updatedSeller.Id) return BadRequest();
 
@@ -102,9 +173,7 @@ public class SellerController(
             return Unauthorized("You are not authorized to update this seller.");
         }
 
-        try
-        {
-            await _db.Seller
+        await _db.Seller
             .Where(seller => seller.Id == updatedSeller.Id)
             .ExecuteUpdateAsync(seller => seller
                 .SetProperty(prop => prop.OrganizationName, prop => updatedSeller.OrganizationName)
@@ -114,12 +183,7 @@ public class SellerController(
                 .SetProperty(prop => prop.Address, prop => updatedSeller.Address)
             );
 
-            return Ok(updatedSeller);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        return Ok(updatedSeller);
     }
 
     [HttpDelete("{id}")]
@@ -144,9 +208,9 @@ public class SellerController(
         {
             await _db.ShopUsers
                 .Where(user => user.SellerId == id)
-                .ExecuteUpdateAsync( user => user
-                    .SetProperty(prop => prop.SellerId,  prop => null)
-                    .SetProperty(prop => prop.SellerId,  prop => null)
+                .ExecuteUpdateAsync(user => user
+                    .SetProperty(prop => prop.SellerId, prop => null)
+                    .SetProperty(prop => prop.SellerId, prop => null)
                     .SetProperty(prop => prop.UserLevel, prop => UserLevel.Customer)
                 );
 

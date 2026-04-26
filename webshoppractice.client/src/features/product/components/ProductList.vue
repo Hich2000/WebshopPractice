@@ -25,11 +25,12 @@ async function loadData(pageNumber: number, pageSize: number) {
     rows.value = json.pageSize
 
     items.value = [];
-    json.body.forEach((element: { id: string; name: string; price: number }) => {
+    json.body.forEach((element: { id: string; name: string; price: number; sellerId: string }) => {
       items.value.push({
         productId: element.id,
         name: element.name,
-        price: element.price
+        price: element.price,
+        sellerId: element.sellerId
       })
     });
   }

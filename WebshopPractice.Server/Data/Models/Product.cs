@@ -9,6 +9,6 @@ public class Product
     public required string Name { get; set; }
     public decimal Price { get; set; }
 
-    public Guid SellerId { get; set; }
+    public required Guid SellerId { get; set; }
     public Seller? Seller { get; set; }
 }

@@ -94,6 +94,39 @@ public class SellerController(
         };
     }
 
+    [HttpGet("{id}/Products")]
+    public async Task<Paginated<ProductDTO>> GetProducts(Guid id, int pageNumber = 1, int pageSize = _smallestPageLength)
+    {
+        if (!_allowedPageLength.Contains(pageSize)) pageSize = _smallestPageLength;
+        if (pageNumber < 1) pageNumber = 1;
+
+        List<ProductDTO> productSlice = await _db.Products
+            .AsNoTracking()
+            .Where(product => product.SellerId == id)
+            .OrderBy(product => product.Name)
+            .Take(pageSize)
+            .Select(product => new ProductDTO
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Price = product.Price,
+                SellerId = product.SellerId
+            })
+            .ToListAsync();
+
+        int totalRecordCount = await _db.Products.CountAsync();
+        int pageCount = (int)Math.Ceiling((double)totalRecordCount / pageSize);
+
+        return new Paginated<ProductDTO>
+        {
+            PageNumber = pageNumber,
+            PageCount = pageCount,
+            PageSize = pageSize,
+            TotalRecordCount = totalRecordCount,
+            Body = productSlice
+        };
+    }
+
     [HttpGet("{id}")]
     [Authorize]
     public async Task<ActionResult<SellerDTO>> Get(Guid id)

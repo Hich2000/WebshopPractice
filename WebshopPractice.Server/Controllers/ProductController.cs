@@ -19,7 +19,7 @@ public class ProductController(WebshopDbContext db) : ControllerBase
 
     [HttpGet]
     [Route("Paged")]
-    public async Task<PaginatedTable<ProductDTO>> GetPaged(int pageNumber = 1, int pageSize = _smallestPageLength)
+    public async Task<Paginated<ProductDTO>> GetPaged(int pageNumber = 1, int pageSize = _smallestPageLength)
     {
 
         if (!_allowedPageLength.Contains(pageSize)) pageSize = _smallestPageLength;
@@ -41,7 +41,7 @@ public class ProductController(WebshopDbContext db) : ControllerBase
         int totalRecordCount = await _db.Products.CountAsync();
         int pageCount = (int)Math.Ceiling((double)totalRecordCount / pageSize);
 
-        return new PaginatedTable<ProductDTO>
+        return new Paginated<ProductDTO>
         {
             PageNumber = pageNumber,
             PageCount = pageCount,

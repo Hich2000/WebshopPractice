@@ -24,7 +24,7 @@ public class ShopUserController(
     [HttpGet]
     [Route("Paged")]
     [Authorize(Policy = "Admin")]
-    public async Task<PaginatedTable<ShopUserDTO>> GetPaged(int pageNumber = 1, int pageSize = _smallestPageLength)
+    public async Task<Paginated<ShopUserDTO>> GetPaged(int pageNumber = 1, int pageSize = _smallestPageLength)
     {
         if (!_allowedPageLength.Contains(pageSize)) pageSize = _smallestPageLength;
         if (pageNumber < 1) pageNumber = 1;
@@ -46,7 +46,7 @@ public class ShopUserController(
         int totalRecordCount = await _db.ShopUsers.CountAsync();
         int pageCount = (int)Math.Ceiling((double)totalRecordCount / pageSize);
 
-        return new PaginatedTable<ShopUserDTO>
+        return new Paginated<ShopUserDTO>
         {
             PageNumber = pageNumber,
             PageCount = pageCount,

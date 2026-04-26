@@ -55,7 +55,7 @@ public class SellerController(
     [HttpGet]
     [Route("Paged")]
     [Authorize(Policy = "Admin")]
-    public async Task<PaginatedTable<SellerDTO>> GetPaged(int pageNumber = 1, int pageSize = _smallestPageLength)
+    public async Task<Paginated<SellerDTO>> GetPaged(int pageNumber = 1, int pageSize = _smallestPageLength)
     {
         if (!_allowedPageLength.Contains(pageSize)) pageSize = _smallestPageLength;
         if (pageNumber < 1) pageNumber = 1;
@@ -84,7 +84,7 @@ public class SellerController(
         int totalRecordCount = await _db.Seller.CountAsync();
         int pageCount = (int)Math.Ceiling((double)totalRecordCount / pageSize);
 
-        return new PaginatedTable<SellerDTO>
+        return new Paginated<SellerDTO>
         {
             PageNumber = pageNumber,
             PageCount = pageCount,
@@ -121,7 +121,7 @@ public class SellerController(
 
     [HttpGet("{id}/users")]
     [Authorize]
-    public async Task<ActionResult<PaginatedTable<ShopUserDTO>>> GetUsers(Guid id, int pageNumber = 1, int pageSize = _smallestPageLength)
+    public async Task<ActionResult<Paginated<ShopUserDTO>>> GetUsers(Guid id, int pageNumber = 1, int pageSize = _smallestPageLength)
     {
         if (!_allowedPageLength.Contains(pageSize)) pageSize = _smallestPageLength;
         if (pageNumber < 1) pageNumber = 1;
@@ -149,7 +149,7 @@ public class SellerController(
         int totalRecordCount = await _db.ShopUsers.CountAsync(user => user.SellerId == id);
         int pageCount = (int)Math.Ceiling((double)totalRecordCount / pageSize);
 
-        return Ok(new PaginatedTable<ShopUserDTO>
+        return Ok(new Paginated<ShopUserDTO>
         {
             PageNumber = pageNumber,
             PageCount = pageCount,

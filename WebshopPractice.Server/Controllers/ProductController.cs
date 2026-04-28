@@ -145,7 +145,7 @@ public class ProductController(
         return user?.SellerId == product.SellerId;
     }
 
-    private class CreateProductDTO
+    public class CreateProductDTO
     {
         public required string Name { get; set; }
         public required decimal Price { get; set; }

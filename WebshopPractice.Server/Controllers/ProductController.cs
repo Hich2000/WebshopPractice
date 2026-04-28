@@ -11,37 +11,41 @@ namespace WebshopPractice.Server.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class ProductController(WebshopDbContext db) : ControllerBase
+public class ProductController(
+    UserManager<ShopUser> usermanager,
+    WebshopDbContext db
+) : ControllerBase
 {
     private const int _smallestPageLength = 10;
     private readonly int[] _allowedPageLength = [_smallestPageLength, 25, 50];
     private readonly WebshopDbContext _db = db;
+    private readonly UserManager<ShopUser> _usermanager = usermanager;
 
     [HttpGet]
     [Route("Paged")]
-    public async Task<PaginatedTable<ProductDTO>> GetPaged(int pageNumber = 1, int pageSize = _smallestPageLength)
+    public async Task<Paginated<ProductDTO>> GetPaged(int pageNumber = 1, int pageSize = _smallestPageLength)
     {
 
         if (!_allowedPageLength.Contains(pageSize)) pageSize = _smallestPageLength;
         if (pageNumber < 1) pageNumber = 1;
 
-        //todo this will be made paged like
         List<ProductDTO> productSlice = await _db.Products
             .AsNoTracking()
             .OrderBy(product => product.Name)
-            .Take(20)
+            .Take(pageSize)
             .Select(product => new ProductDTO
             {
                 Id = product.Id,
                 Name = product.Name,
                 Price = product.Price,
+                SellerId = product.SellerId
             })
             .ToListAsync();
 
         int totalRecordCount = await _db.Products.CountAsync();
         int pageCount = (int)Math.Ceiling((double)totalRecordCount / pageSize);
 
-        return new PaginatedTable<ProductDTO>
+        return new Paginated<ProductDTO>
         {
             PageNumber = pageNumber,
             PageCount = pageCount,
@@ -52,33 +56,23 @@ public class ProductController(WebshopDbContext db) : ControllerBase
     }
 
     [HttpPost]
-    [Authorize]
-    public async Task<IActionResult> Post([FromBody] ProductDTO newProduct)
+    [Authorize(Policy = "Seller")]
+    public async Task<IActionResult> Post([FromBody] CreateProductDTO body)
     {
+        ShopUser? user = await _usermanager.GetUserAsync(User);
+        if (user!.SellerId == null) return BadRequest();
+
+        Guid newId = Guid.NewGuid();
         await _db.Products.AddAsync(new Product
         {
-            Id = Guid.NewGuid(),
-            Name = newProduct.Name,
-            Price = newProduct.Price
+            Id = newId,
+            Name = body.Name,
+            Price = body.Price,
+            SellerId = user.SellerId.Value,
         });
 
-        try
-        {
-            var result = await _db.SaveChangesAsync();
-            if (result > 0)
-            {
-                return Ok();
-            }
-            else
-            {
-                return StatusCode(500, "Failed to register product.");
-            }
-        }
-        catch (Exception ex)
-        {
-            return StatusCode(500, ex.Message);
-        }
-
+        var result = await _db.SaveChangesAsync();
+        return result > 0 ? Ok(newId) : StatusCode(500, "Failed to register product.");
     }
 
     [HttpGet("{id}")]
@@ -90,7 +84,8 @@ public class ProductController(WebshopDbContext db) : ControllerBase
         {
             Id = product.Id,
             Name = product.Name,
-            Price = product.Price
+            Price = product.Price,
+            SellerId = product.SellerId
         })
         .FirstOrDefaultAsync();
 
@@ -99,21 +94,20 @@ public class ProductController(WebshopDbContext db) : ControllerBase
     }
 
     [HttpPatch("{id}")]
-    [Authorize]
-    public async Task<IActionResult> Patch(Guid id, [FromBody] ProductDTO updatedProduct)
+    [Authorize(Policy =  "Seller")]
+    public async Task<IActionResult> Patch(Guid id, [FromBody] CreateProductDTO updatedProduct)
     {
-        if (id != updatedProduct.Id) return BadRequest();
-        
-        //todo when seller accounts are setup check if the user is an admin or the seller that owns the product
+        var product = await _db.Products.FindAsync(id);
+        if (product == null)
+            return BadRequest();
+
+        if (!(await VerifySeller(product))) return BadRequest();
 
         try
         {
-            await _db.Products
-            .Where(product => product.Id == updatedProduct.Id)
-            .ExecuteUpdateAsync(product => product
-                .SetProperty(prop => prop.Name, prop => updatedProduct.Name)
-                .SetProperty(prop => prop.Price, prop => updatedProduct.Price)
-            );
+            product.Name = updatedProduct.Name;
+            product.Price = updatedProduct.Price;
+            await _db.SaveChangesAsync();
 
             return Ok(updatedProduct);
         }
@@ -124,31 +118,36 @@ public class ProductController(WebshopDbContext db) : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [Authorize]
+    [Authorize(Policy = "Seller")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        //todo when seller accounts are setup check if the user is an admin or the seller that owns the product
-
         var product = await _db.Products.FindAsync(id);
         if (product == null)
-            return NotFound();
+            return Ok();
+
+        if (!(await VerifySeller(product))) return BadRequest();
 
         try
         {
             _db.Products.Remove(product);
             var rows = await _db.SaveChangesAsync();
-
-            if (rows > 0)
-            {
-                return NoContent();
-            } else
-            {
-                return StatusCode(500, "Failed to delete product");
-            }
+            return rows > 0 ? Ok() : StatusCode(500, "Failed to delete product");
         }
         catch (Exception ex)
         {
             return StatusCode(500, ex.Message);
         }
+    }
+
+    private async Task<bool> VerifySeller(Product product)
+    {
+        var user = await _usermanager.GetUserAsync(User);
+        return user?.SellerId == product.SellerId;
+    }
+
+    public class CreateProductDTO
+    {
+        public required string Name { get; set; }
+        public required decimal Price { get; set; }
     }
 }

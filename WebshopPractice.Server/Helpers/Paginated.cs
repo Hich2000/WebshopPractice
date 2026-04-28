@@ -1,6 +1,6 @@
 ﻿namespace WebshopPractice.Server.Helpers;
 
-public class PaginatedTable<T>
+public class Paginated<T>
 {
     //number of the currently represented page
     public int PageNumber { get; set; }

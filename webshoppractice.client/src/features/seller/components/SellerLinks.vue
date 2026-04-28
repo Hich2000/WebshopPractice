@@ -18,6 +18,11 @@ const menuItems: MenuItem[] = [
     label: 'My Products',
     icon: 'pi pi-user',
     command: () => router.push('/Seller/Products')
+  },
+  {
+    label: 'New Product',
+    icon: 'pi pi-user',
+    command: () => router.push('/Seller/NewProduct')
   }
 ]
 </script>

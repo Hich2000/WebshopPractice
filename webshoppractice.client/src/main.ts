@@ -37,6 +37,9 @@ import SellerTable from './features/admin/components/SellerTable.vue'
 import SellerView from './features/seller/views/SellerView.vue'
 import SellerLinks from './features/seller/components/SellerLinks.vue'
 import SellerInformation from './features/seller/components/SellerInformation.vue'
+import MyProducts from './features/seller/components/MyProducts.vue'
+import NewProduct from './features/seller/components/NewProduct.vue'
+import EditProduct from './features/seller/components/EditProduct.vue'
 
 
 const routes = [
@@ -109,7 +112,15 @@ const routes = [
       },
       {
         path: 'Products',
-        component: PlaceHolderView
+        component: MyProducts
+      },
+      {
+        path: 'Products/:id',
+        component: EditProduct
+      },
+      {
+        path: 'NewProduct',
+        component: NewProduct
       },
     ]
   }

@@ -95,7 +95,7 @@ public class ProductController(
 
     [HttpPatch("{id}")]
     [Authorize(Policy =  "Seller")]
-    public async Task<IActionResult> Patch(Guid id, [FromBody] ProductDTO updatedProduct)
+    public async Task<IActionResult> Patch(Guid id, [FromBody] CreateProductDTO updatedProduct)
     {
         var product = await _db.Products.FindAsync(id);
         if (product == null)

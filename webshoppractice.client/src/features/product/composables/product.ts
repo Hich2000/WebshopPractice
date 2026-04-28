@@ -5,6 +5,11 @@ export type Product = {
   sellerId: string
 }
 
+export type ProductFormData = {
+  productName: string,
+  productPrice: number,
+  success: boolean | null,
+}
 
 async function createProduct(name: string, price: number): Promise<boolean> {
   const response = await fetch("/product", {
@@ -18,8 +23,6 @@ async function createProduct(name: string, price: number): Promise<boolean> {
       price: price,
     })
   });
-
-  console.log(await response.text())
 
   return response.ok;
 }
@@ -42,16 +45,21 @@ async function getProductInfo(id: string): Promise<Product | false> {
   }
 }
 
-async function updateProductInfo(id: string, name: string, price: string): Promise<boolean> {
+async function updateProductInfo(id: string, name: string, price: number): Promise<boolean> {
   const response = await fetch(`/product/${id}`, {
     method: "PATCH",
     credentials: "include",
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify({
       id: id,
       name: name,
       price: price
     })
   });
+
+  console.log(await response.text());
 
   return response.ok;
 }

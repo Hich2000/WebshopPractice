@@ -4,6 +4,7 @@ import { onMounted, ref, type Ref } from 'vue';
 import { useConfirm } from 'primevue/useconfirm'
 import { ConfirmPopup } from 'primevue';
 import { type Product, useProduct } from '@/features/product/composables/product';
+import { router } from '@/main';
 
 const { deleteProduct } = useProduct();
 
@@ -85,9 +86,16 @@ onMounted(async () => {
     :loading="loading" @page="onPageChange">
     <Column field="name" header="name" />
     <Column field="price" header="price" />
-    <Column header="Delete">
+    <Column header="Edit" style="width: 5%;">
       <template #body="slotProps">
-        <Button icon="pi pi-trash" color="red" @click="(event) => confirmDelete(event, slotProps.index)"
+        <Button icon="pi pi-pencil" @click="router.push(`/Seller/Products/${slotProps.data.productId}`)"
+          severity="info" />
+        <ConfirmPopup />
+      </template>
+    </Column>
+    <Column header="Delete" style="width: 5%;">
+      <template #body="slotProps">
+        <Button icon="pi pi-trash" @click="(event) => confirmDelete(event, slotProps.index)"
           severity="danger" />
         <ConfirmPopup />
       </template>
